@@ -1,11 +1,13 @@
 import { useState, useCallback } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet } from 'react-native';
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useDatabase } from '../../src/hooks/useDatabase';
+import { useRouter } from 'expo-router';
 
 export default function SearchTab() {
   const { searchCharacters } = useDatabase();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<any[]>([]);
+  const router = useRouter();
 
   const handleSearch = useCallback(async (text: string) => {
     setQuery(text);
@@ -24,18 +26,22 @@ export default function SearchTab() {
         placeholder="Search pinyin, meaning, or hanzi..."
         value={query}
         onChangeText={handleSearch}
+        placeholderTextColor="#888"
       />
       <FlatList
         data={results}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.card}>
+          <TouchableOpacity 
+            style={styles.card}
+            onPress={() => router.push(`/character/${item.simplified}`)}
+          >
             <Text style={styles.hanzi}>{item.simplified} {item.traditional && `(${item.traditional})`}</Text>
             <Text style={styles.pinyin}>{item.pinyin}</Text>
             <Text style={styles.meanings} numberOfLines={2}>
               {item.meanings ? JSON.parse(item.meanings).join(', ') : ''}
             </Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -43,22 +49,27 @@ export default function SearchTab() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#f0f0f0' },
+  container: { flex: 1, padding: 16, backgroundColor: '#121212' },
   input: {
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: '#1E1E1E',
+    color: '#fff',
     borderRadius: 8,
     paddingHorizontal: 16,
     marginBottom: 16,
     fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#333',
   },
   card: {
-    backgroundColor: '#fff',
+    backgroundColor: '#1E1E1E',
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#333',
   },
-  hanzi: { fontSize: 24, fontWeight: 'bold' },
-  pinyin: { fontSize: 16, color: '#666', marginTop: 4 },
-  meanings: { fontSize: 14, color: '#333', marginTop: 4 },
+  hanzi: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
+  pinyin: { fontSize: 16, color: '#aaa', marginTop: 4 },
+  meanings: { fontSize: 14, color: '#ccc', marginTop: 4 },
 });
