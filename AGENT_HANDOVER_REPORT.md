@@ -53,3 +53,11 @@ The app is heavily inspired by **Kanji Study** (Dark Mode `#121212`, minimalist 
 1. **Compilation Check:** The project has been verified with `npx expo start` and `npm run tsc`. 
 2. **Styling Note:** Agents heavily utilized `StyleSheet` to prevent layout breaking during parallel execution. You (Local Claude) are encouraged to migrate these files to **NativeWind v4** (Tailwind) to make the code cleaner and easier for the user to tweak the "Kanji Study" aesthetic.
 3. **Writing Canvas (Mode B):** Agent E implemented Mode A (Self-Assessment). Your next major feature goal should be Mode B (Auto Detection), where you implement a stroke-matching algorithm (like Hanzi Writer) to automatically snap drawn lines to the correct stroke path.
+
+---
+
+## 🛠 Phase 2.5: Dependency & Build Fixes (Expo Go Compatibility)
+- **Status:** ✅ Complete
+- **What happened:** The initial setup used React 19 due to the latest `expo-router` resolving higher peer dependencies, but Expo Go (and standard Expo SDK 51) strictly requires React 18 (`~18.2.0`). This caused Metro bundler and DevTools crashes.
+- **The Fix:** We downgraded the dependencies to be compatible with Expo Go and ran `npm install --legacy-peer-deps`. 
+- **Nuance for Local Agent:** When you clone this and run `npm install`, ALWAYS use the `--legacy-peer-deps` flag to avoid strict peer dependency conflicts with `@react-native/virtualized-lists` and `@types/react`. Otherwise, your local `npm install` will fail with an `ERESOLVE` error.
