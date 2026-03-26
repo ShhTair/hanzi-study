@@ -21,7 +21,7 @@ export default function WriteCanvasScreen() {
         const db = await SQLite.openDatabaseAsync('hanzi.db');
         const result = await db.getFirstAsync<{ graphics: string }>(
           'SELECT graphics FROM hanzi_graphics WHERE character = ?',
-          [char]
+          [char as string]
         );
         if (result && result.graphics) {
           setCharacterData(JSON.parse(result.graphics));
@@ -31,7 +31,7 @@ export default function WriteCanvasScreen() {
       }
     };
     if (char) fetchCharData();
-  }, [char]);
+  }, [char as string]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -58,7 +58,7 @@ export default function WriteCanvasScreen() {
       const db = await SQLite.openDatabaseAsync('hanzi.db');
       await db.runAsync(
         'INSERT OR REPLACE INTO progress (character, rating, last_reviewed) VALUES (?, ?, datetime("now"))',
-        [char, rating]
+        [char as string, rating]
       );
       // Navigate back or reset
       setPaths([]);
@@ -82,12 +82,10 @@ export default function WriteCanvasScreen() {
 
         {/* The Hint */}
         {characterData && (
-          <Svg height={CANVAS_SIZE} width={CANVAS_SIZE} style={styles.hint} viewBox="0 0 1024 1024">
-            <View style={{ transform: [{ scaleY: -1 }, { translateY: -1024 }] }}>
-              {characterData.strokes.map((strokePath: string, index: number) => (
-                <Path key={index} d={strokePath} fill="#FFFFFF" opacity={0.15} />
-              ))}
-            </View>
+          <Svg height={CANVAS_SIZE} width={CANVAS_SIZE} style={styles.hint} viewBox="0 0 1024 1024" transform={[{ scaleY: -1 }, { translateY: -CANVAS_SIZE }]}>
+            {characterData.strokes.map((strokePath: string, index: number) => (
+              <Path key={index} d={strokePath} fill="#FFFFFF" opacity={0.15} />
+            ))}
           </Svg>
         )}
 
