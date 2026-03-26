@@ -1,60 +1,55 @@
-# 🚀 Hanzi Study: Agent Handover Report (v1.0.0)
+# 🚀 Hanzi Study: Agent Handover Report (v2.0.0 - Phase 2 Parallel Execution)
 
 ## 📌 Context for Local AI (Claude Code)
-This project was entirely generated overnight by a swarm of autonomous OpenClaw subagents following the `ExecutionPlan.md` and `TechBrief.md`. The foundation is 100% complete and fully functional offline.
+This phase of the project was executed by a swarm of **5 parallel autonomous OpenClaw subagents** following the `HanziStudy_Phase2_ParallelAgents.md` specification. The goal was to build out the full UI shell, offline SQLite engine, Spaced Repetition (SRS) logic, and the Writing Canvas (Mode A) in a highly decoupled, conflict-free manner.
 
-Your task (Local Claude) is to clone this repository, polish the UI, fine-tune the animations, and compile the final APK/IPA for the user's phone.
-
----
-
-## 🏗 System Architecture & What Was Built
-
-### Phase 1: Data Pipeline & SQLite Factory
-- **Status:** ✅ Complete
-- **What happened:** We downloaded and parsed three massive datasets (CC-CEDICT, Make Me a Hanzi, HSK 3.0).
-- **Result:** We generated a highly compressed, pre-indexed `assets/db/hanzi.db` (56 MB). It contains three tables: `dictionary` (124k words), `graphics` (9.5k SVG paths & medians), and `hsk` (11k words with levels 1-9).
-- **Nuance for Local Agent:** Do **NOT** attempt to re-run the Python scripts in `scripts/data/` unless you are updating the dictionaries. The `.db` file is already bundled in the `assets` folder.
-
-### Phase 2: Offline Database Engine & Routing
-- **Status:** ✅ Complete
-- **Stack:** Expo Router + `expo-sqlite`.
-- **What happened:** We built a local hook system (`useDatabase.ts`) that queries `hanzi.db` natively on the device without network requests.
-- **UI Shell:** We configured the bottom tab navigation (Dictionary, Study, Lists) using `lucide-react-native` and established a strict Dark Mode palette (`#121212` background, `#1E1E1E` cards).
-
-### Phase 3: Character Detail & SVG Stroke Animation
-- **Status:** ✅ Complete
-- **Stack:** `react-native-svg` + `react-native-reanimated`.
-- **What happened:** The dynamic route `app/(tabs)/character/[char].tsx` was built.
-- **The Magic:** We use `strokeDashoffset` combined with `useSharedValue` and `withDelay` to sequentially animate the SVG paths of a character stroke-by-stroke.
-- **Nuance for Local Agent:** The Make Me a Hanzi SVG paths use a coordinate system that is flipped vertically. We applied a `transform: [{ scaleY: -1 }]` to fix this. Do not remove this transform or the characters will draw upside down!
-
-### Phase 4: Spaced Repetition Flashcards (SRS)
-- **Status:** ✅ Complete
-- **What happened:** Built `app/(tabs)/study.tsx`. Users select an HSK Level (1-9).
-- **Database Logic:** We implemented an SQLite migration hook that creates a `user_progress` table. When the user taps "Forgot" (Left) or "Remembered" (Right), we update the `srs_interval` and `ease_factor` using an `INSERT ... ON CONFLICT DO UPDATE` query.
-
-### Phase 5: Writing Practice Canvas
-- **Status:** ✅ Complete
-- **Stack:** `PanResponder` + `react-native-svg`.
-- **What happened:** Built `app/(tabs)/character/write/[char].tsx`. A large grid divided into 4 quadrants displays a semi-transparent (opacity 0.15) hint of the character.
-- **The Brush:** We capture X/Y touches via `PanResponder` and render `<Polyline>` elements dynamically to simulate thick white ink. The user self-assesses their writing with "Wrong" or "Perfect" buttons, which hook back into the SRS database.
+The app is heavily inspired by **Kanji Study** (Dark Mode `#121212`, minimalist borders `#333333`, functional offline-first architecture).
 
 ---
 
-## 🎨 Styling Strategy (NativeWind vs StyleSheet)
-**Important Note on Styling:**
-Initially, the subagents used standard React Native `StyleSheet.create` for maximum stability and speed during the rapid prototyping phase. 
+## 🏗 Agent Execution Summaries
 
-However, since the user explicitly requested a "Tailwind-like" experience for easier future customization, you (Local Claude) **can safely migrate the components to `NativeWind` v4**. 
-The basic color palette is already defined:
-- Background: `#121212`
-- Cards/Search: `#1E1E1E` / `#2A2A2A`
-- Borders: `#333333`
-- Accent (Kanji Study style): Muted blue or red for wrong/correct SRS buttons.
+### 🛠 Agent A: Core Utilities & Foundation
+- **Status:** ✅ Complete
+- **Files Created/Modified:**
+  - `src/constants/colors.ts`
+  - `src/components/PinyinText.tsx`
+  - `src/hooks/useAudio.ts`
+  - `src/utils/pinyin.ts`
+- **What happened:** Established the global design tokens (colors) and the foundational utilities used by all other agents. Built the tone-colored Pinyin parser and the hook to play Google TTS audio for characters.
+
+### 🏠 Agent B: Offline DB Engine & Home Dashboard
+- **Status:** ✅ Complete
+- **Files Created/Modified:**
+  - `app/(tabs)/index.tsx`
+- **What happened:** Built the main landing dashboard. Replaced the generic stub with a robust UI that queries SQLite for daily streak, cards reviewed today, and HSK progress.
+- **Known Issues/Fixes:** Wrapped SQL queries in safe `try/catch` blocks. Since Agent C was simultaneously building the `user_progress` table, Agent B proactively handled missing columns (e.g., `last_reviewed`) so the app would not crash on the first launch before migrations finished.
+
+### 🧠 Agent C: Study Deck & Spaced Repetition (SRS)
+- **Status:** ✅ Complete
+- **Files Created/Modified:**
+  - `app/(tabs)/study.tsx`
+  - `app/(tabs)/study-complete.tsx`
+- **What happened:** Replaced the basic 2-state flashcard logic with a proper **SM-2 interval calculation** stored in SQLite (`user_progress`). Built the `study-complete.tsx` screen to show session metrics. Integrated `react-native-gesture-handler` for Tinder-style card swiping (Left = Forgot, Right = Perfect).
+
+### 📖 Agent D: Character Detail & Action UI
+- **Status:** ✅ Complete
+- **Files Created/Modified:**
+  - `app/(tabs)/character/[char].tsx`
+- **What happened:** Overhauled the character detail screen. Fixed a critical bug where the SVG "Play Animation" button was flipped upside down by the SVG container's `scaleY: -1` transform. Added 4 scrollable tabs (Meanings, Strokes, Components, Details) and a heart icon (Favorites) in the header that triggers an `ALTER TABLE` if the column is missing.
+
+### ✍️ Agent E: Writing Canvas & Lists
+- **Status:** ✅ Complete
+- **Files Created/Modified:**
+  - `app/(tabs)/lists.tsx`
+  - `app/(tabs)/lists/[level].tsx`
+  - `app/(tabs)/character/write/[char].tsx`
+- **What happened:** Built the Lists UI to browse HSK levels 1-9. Implemented the hardest feature: **Writing Canvas (Mode A)**. Used `PanResponder` to track user touch coordinates and map them into SVG `<Polyline>` elements. Added self-assessment buttons ("I wrote it wrong" / "Perfect").
+- **Known Issues/Fixes:** Hit a TypeScript compilation error (`TS1259: esModuleInterop` flag missing for React). Agent E diagnosed the `tsconfig.json` issue, fixed the `import * as React from 'react'` declarations in its files, and successfully compiled.
 
 ---
 
-## 🔧 Next Steps for Local Claude
-1. **Polish the UI:** The functionality is there, but the spacing, typography, and button designs need that premium "Kanji Study" minimalist feel. (Migrate to NativeWind if preferred).
-2. **Iconography:** Ensure all `lucide-react-native` icons look crisp.
-3. **Compile:** Run `npx expo prebuild` and test the app on a physical device. Ensure the `hanzi.db` correctly copies to the device's document directory on first launch.
+## 🔧 Final Verification & Next Steps for Local Claude
+1. **Compilation Check:** The project has been verified with `npx expo start` and `npm run tsc`. 
+2. **Styling Note:** Agents heavily utilized `StyleSheet` to prevent layout breaking during parallel execution. You (Local Claude) are encouraged to migrate these files to **NativeWind v4** (Tailwind) to make the code cleaner and easier for the user to tweak the "Kanji Study" aesthetic.
+3. **Writing Canvas (Mode B):** Agent E implemented Mode A (Self-Assessment). Your next major feature goal should be Mode B (Auto Detection), where you implement a stroke-matching algorithm (like Hanzi Writer) to automatically snap drawn lines to the correct stroke path.
