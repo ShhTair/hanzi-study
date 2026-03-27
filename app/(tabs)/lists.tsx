@@ -4,7 +4,7 @@ import { useRouter } from 'expo-router';
 import * as SQLite from 'expo-sqlite';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-import { BG, CARD, CARD2, BORDER, TEXT, TEXT_DIM, ACCENT } from '../../src/constants/colors';
+import { Colors } from '../../src/constants/colors';
 
 type HskStat = {
   level: number;
@@ -97,7 +97,7 @@ export default function ListsScreen() {
           </View>
           <Text style={styles.progressText}>{item.reviewed}/{item.total}</Text>
         </View>
-        <Ionicons name="chevron-forward" size={24} color={TEXT_DIM} />
+        <Ionicons name="chevron-forward" size={24} color={Colors.textSecondary} />
       </TouchableOpacity>
     );
   };
@@ -110,7 +110,7 @@ export default function ListsScreen() {
           <Text style={styles.listTitle}>{item.name}</Text>
           <Text style={styles.listSubtitle}>{item.count} characters</Text>
         </View>
-        <Ionicons name="chevron-forward" size={24} color={TEXT_DIM} />
+        <Ionicons name="chevron-forward" size={24} color={Colors.textSecondary} />
       </TouchableOpacity>
     </View>
   );
@@ -130,7 +130,7 @@ export default function ListsScreen() {
           <Text style={styles.sectionHeader}>Custom Sets</Text>
           <View style={styles.card}>
             <TouchableOpacity style={styles.createBtn} onPress={() => setModalVisible(true)}>
-              <Ionicons name="add-circle-outline" size={24} color={ACCENT} />
+              <Ionicons name="add-circle-outline" size={24} color={Colors.primary} />
               <Text style={styles.createBtnText}>Create New Set</Text>
             </TouchableOpacity>
             
@@ -146,7 +146,7 @@ export default function ListsScreen() {
             <TextInput
               style={styles.input}
               placeholder="Set Name"
-              placeholderTextColor={TEXT_DIM}
+              placeholderTextColor={Colors.textSecondary}
               value={newSetName}
               onChangeText={setNewSetName}
               autoFocus
@@ -167,28 +167,28 @@ export default function ListsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: BG },
+  container: { flex: 1, backgroundColor: Colors.background },
   scrollContent: { padding: 16 },
   section: { marginBottom: 24 },
-  sectionHeader: { color: TEXT_DIM, fontSize: 14, fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 12, marginLeft: 4 },
-  card: { backgroundColor: CARD, borderRadius: 12, overflow: 'hidden' },
-  listItem: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: BORDER },
+  sectionHeader: { color: Colors.textSecondary, fontSize: 14, fontWeight: 'bold', textTransform: 'uppercase', marginBottom: 12, marginLeft: 4 },
+  card: { backgroundColor: Colors.card, borderRadius: 12, overflow: 'hidden' },
+  listItem: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: Colors.border },
   listTextContainer: { flex: 1 },
-  listTitle: { color: TEXT, fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
-  listSubtitle: { color: TEXT_DIM, fontSize: 14 },
+  listTitle: { color: Colors.textPrimary, fontSize: 16, fontWeight: 'bold', marginBottom: 4 },
+  listSubtitle: { color: Colors.textSecondary, fontSize: 14 },
   progressContainer: { width: 80, alignItems: 'flex-end', marginRight: 16 },
-  progressBarBg: { width: '100%', height: 6, backgroundColor: CARD2, borderRadius: 3, marginBottom: 4 },
-  progressBarFill: { height: 6, backgroundColor: ACCENT, borderRadius: 3 },
-  progressText: { color: TEXT_DIM, fontSize: 12 },
-  separator: { height: 1, backgroundColor: BORDER },
+  progressBarBg: { width: '100%', height: 6, backgroundColor: Colors.cardElevated, borderRadius: 3, marginBottom: 4 },
+  progressBarFill: { height: 6, backgroundColor: Colors.primary, borderRadius: 3 },
+  progressText: { color: Colors.textSecondary, fontSize: 12 },
+  separator: { height: 1, backgroundColor: Colors.border },
   createBtn: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  createBtnText: { color: ACCENT, fontSize: 16, fontWeight: 'bold', marginLeft: 12 },
+  createBtnText: { color: Colors.primary, fontSize: 16, fontWeight: 'bold', marginLeft: 12 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center' },
-  modalContent: { backgroundColor: CARD, width: '85%', padding: 24, borderRadius: 12 },
-  modalTitle: { color: TEXT, fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
-  input: { backgroundColor: CARD2, color: TEXT, padding: 12, borderRadius: 8, fontSize: 16, marginBottom: 24, borderWidth: 1, borderColor: BORDER },
+  modalContent: { backgroundColor: Colors.card, width: '85%', padding: 24, borderRadius: 12 },
+  modalTitle: { color: Colors.textPrimary, fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
+  input: { backgroundColor: Colors.cardElevated, color: Colors.textPrimary, padding: 12, borderRadius: 8, fontSize: 16, marginBottom: 24, borderWidth: 1, borderColor: Colors.border },
   modalActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 16 },
   modalBtn: { paddingVertical: 8, paddingHorizontal: 16 },
-  modalBtnTextDim: { color: TEXT_DIM, fontSize: 16, fontWeight: '600' },
-  modalBtnTextAccent: { color: ACCENT, fontSize: 16, fontWeight: '600' },
+  modalBtnTextDim: { color: Colors.textSecondary, fontSize: 16, fontWeight: '600' },
+  modalBtnTextAccent: { color: Colors.primary, fontSize: 16, fontWeight: '600' },
 });

@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
-import { useDatabase } from '../../../src/hooks/useDatabase';
+import { useDatabase } from '../../src/hooks/useDatabase';
 import Svg, { Path } from 'react-native-svg';
 import Animated, {
   useSharedValue,
@@ -12,8 +12,8 @@ import Animated, {
   cancelAnimation,
 } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
-import { PinyinText } from '../../../src/components/PinyinText';
-import { useAudio } from '../../../src/hooks/useAudio';
+import { PinyinText } from '../../src/components/PinyinText';
+import { useAudio } from '../../src/hooks/useAudio';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const MAX_PATH_LENGTH = 3500;

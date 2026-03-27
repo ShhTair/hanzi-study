@@ -52,7 +52,7 @@ export function SideDrawer() {
     }, 250);
   };
 
-  if (!isDrawerOpen && drawerAnim._value === -DRAWER_WIDTH) return null;
+  if (!isDrawerOpen && drawerAnim.valueOf() === -DRAWER_WIDTH) return null;
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents={isDrawerOpen ? 'auto' : 'none'}>

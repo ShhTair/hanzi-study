@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import * as SQLite from 'expo-sqlite';
-import { PinyinText } from '../../../src/components/PinyinText';
-import { BG, CARD, CARD2, BORDER, TEXT, TEXT_DIM, ACCENT } from '../../../src/constants/colors';
+import { PinyinText } from '../../src/components/PinyinText';
+import { Colors } from '../../src/constants/colors';
 
 type HskCharacter = {
   word: string;
@@ -61,7 +61,7 @@ export default function HskLevelScreen() {
       <Stack.Screen options={{ title: `HSK ${level} — ${characters.length} characters` }} />
       
       {loading ? (
-        <ActivityIndicator size="large" color={ACCENT} style={styles.loader} />
+        <ActivityIndicator size="large" color={Colors.primary} style={styles.loader} />
       ) : (
         <FlatList
           data={characters}
@@ -79,7 +79,7 @@ export default function HskLevelScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BG,
+    backgroundColor: Colors.background,
   },
   loader: {
     marginTop: 40,
@@ -93,19 +93,19 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     maxWidth: '31%', // roughly a third minus margins
-    backgroundColor: CARD,
+    backgroundColor: Colors.card,
     borderRadius: 12,
     padding: 16,
     margin: '1.1%',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: Colors.border,
     aspectRatio: 0.85,
   },
   charText: {
     fontSize: 32,
-    color: TEXT,
+    color: Colors.textPrimary,
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   badge: {
-    backgroundColor: CARD2,
+    backgroundColor: Colors.cardElevated,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 10,
-    color: TEXT_DIM,
+    color: Colors.textSecondary,
     fontWeight: 'bold',
   },
 });

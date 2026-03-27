@@ -28,3 +28,11 @@ export const Colors = {
   hsk6:           '#501010',
   hsk79:          '#404040',
 }
+
+export const TONE_COLORS = {
+  1: Colors.tone1,
+  2: Colors.tone2,
+  3: Colors.tone3,
+  4: Colors.tone4,
+  5: Colors.toneN,
+};

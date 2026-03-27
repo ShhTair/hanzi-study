@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
-import { BG, CARD, CARD2, TEXT, TEXT_DIM, ACCENT, BORDER } from '../../src/constants/colors';
+import { Colors } from '../../src/constants/colors';
 
 export default function HomeTab() {
   const router = useRouter();
@@ -145,7 +145,7 @@ export default function HomeTab() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: BG,
+    backgroundColor: Colors.background,
   },
   content: {
     padding: 20,
@@ -157,11 +157,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: TEXT,
+    color: Colors.textPrimary,
   },
   subtitle: {
     fontSize: 16,
-    color: TEXT_DIM,
+    color: Colors.textSecondary,
     marginTop: 4,
   },
   statsContainer: {
@@ -171,37 +171,37 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: CARD,
+    backgroundColor: Colors.card,
     borderRadius: 12,
     padding: 16,
     marginHorizontal: 4,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: Colors.border,
   },
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: ACCENT,
+    color: Colors.primary,
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: TEXT_DIM,
+    color: Colors.textSecondary,
     textAlign: 'center',
   },
   section: {
     marginBottom: 30,
-    backgroundColor: CARD,
+    backgroundColor: Colors.card,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: Colors.border,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: TEXT,
+    color: Colors.textPrimary,
     marginBottom: 16,
   },
   progressRow: {
@@ -211,25 +211,25 @@ const styles = StyleSheet.create({
   },
   progressLabel: {
     width: 60,
-    color: TEXT,
+    color: Colors.textPrimary,
     fontSize: 14,
   },
   progressBarContainer: {
     flex: 1,
     height: 8,
-    backgroundColor: CARD2,
+    backgroundColor: Colors.cardElevated,
     borderRadius: 4,
     marginHorizontal: 12,
     overflow: 'hidden',
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: ACCENT,
+    backgroundColor: Colors.primary,
     borderRadius: 4,
   },
   progressText: {
     width: 40,
-    color: TEXT_DIM,
+    color: Colors.textSecondary,
     fontSize: 12,
     textAlign: 'right',
   },
@@ -238,18 +238,18 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   actionBtn: {
-    backgroundColor: ACCENT,
+    backgroundColor: Colors.primary,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: 'center',
   },
   actionBtnSecondary: {
-    backgroundColor: CARD,
+    backgroundColor: Colors.card,
     borderWidth: 1,
-    borderColor: BORDER,
+    borderColor: Colors.border,
   },
   actionBtnText: {
-    color: TEXT,
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: 'bold',
   },
