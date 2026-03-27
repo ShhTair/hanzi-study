@@ -2,7 +2,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { DrawerProvider } from '../src/context/DrawerContext';
 import { SideDrawer } from '../src/components/SideDrawer';
 
@@ -51,7 +51,7 @@ export default function Layout() {
 
   if (!isReady) {
     return (
-      <View style={{flex: 1, backgroundColor: '#1C1C1E', justifyContent: 'center', alignItems: 'center'}}>
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0D9488" />
       </View>
     );
@@ -60,7 +60,7 @@ export default function Layout() {
   return (
     <SQLiteProvider databaseName="hanzi.db" assetSource={{ assetId: require('../assets/db/hanzi.db') }} onInit={migrateDbIfNeeded}>
       <DrawerProvider>
-        <View style={{ flex: 1 }}>
+        <View style={styles.container}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="onboarding" />
             <Stack.Screen name="(tabs)" />
@@ -75,3 +75,15 @@ export default function Layout() {
     </SQLiteProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: '#1C1C1E',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  container: {
+    flex: 1,
+  },
+});

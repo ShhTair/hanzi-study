@@ -1,9 +1,19 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { Colors } from '../../src/constants/colors';
 
 export default function TabLayout() {
   return (
-    <Tabs screenOptions={{ headerShown: true, tabBarStyle: { backgroundColor: '#1E1E1E', borderTopColor: '#333' }, headerStyle: { backgroundColor: '#1E1E1E' }, headerTintColor: '#fff', tabBarActiveTintColor: '#fff', tabBarInactiveTintColor: '#888' }}>
+    <Tabs 
+      screenOptions={{ 
+        headerShown: true, 
+        tabBarStyle: { backgroundColor: '#1C1C1E', borderTopColor: '#2C2C2E' }, 
+        headerStyle: { backgroundColor: '#1C1C1E' }, 
+        headerTintColor: '#fff', 
+        tabBarActiveTintColor: Colors.primary, 
+        tabBarInactiveTintColor: '#888' 
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

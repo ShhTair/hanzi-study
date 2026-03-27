@@ -123,7 +123,7 @@ export function SideDrawer() {
             <NavItem icon="apps" color="#404040" label="Sequence" onPress={() => handleNavigate('/sequence-picker')} />
           </View>
 
-          <View style={{height: 40}} />
+          <View style={styles.spacer} />
         </ScrollView>
       </Animated.View>
     </View>
@@ -230,6 +230,9 @@ const styles = StyleSheet.create({
   },
   lockedIcon: {
     marginLeft: 8,
+  },
+  spacer: {
+    height: 40,
   },
   divider: {
     height: 1,
