@@ -3,6 +3,8 @@ import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, ActivityIndicator } from 'react-native';
+import { DrawerProvider } from '../src/context/DrawerContext';
+import { SideDrawer } from '../src/components/SideDrawer';
 
 export default function Layout() {
   const router = useRouter();
@@ -57,10 +59,19 @@ export default function Layout() {
 
   return (
     <SQLiteProvider databaseName="hanzi.db" assetSource={{ assetId: require('../assets/db/hanzi.db') }} onInit={migrateDbIfNeeded}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="onboarding" />
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+      <DrawerProvider>
+        <View style={{ flex: 1 }}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="character/[char]" />
+            <Stack.Screen name="character/write/[char]" />
+            <Stack.Screen name="study-complete" />
+            <Stack.Screen name="lists/[level]" />
+          </Stack>
+          <SideDrawer />
+        </View>
+      </DrawerProvider>
     </SQLiteProvider>
   );
 }
