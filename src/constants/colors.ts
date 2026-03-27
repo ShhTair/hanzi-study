@@ -1,15 +1,30 @@
-export const TONE_COLORS = {
-  1: '#4A90E2',  // flat — blue
-  2: '#5BA85A',  // rising — green
-  3: '#E8A838',  // dip — orange
-  4: '#D95F45',  // falling — red
-  5: '#999999',  // neutral — gray
-};
-
-export const BG = '#121212';
-export const CARD = '#1E1E1E';
-export const CARD2 = '#2A2A2A';
-export const BORDER = '#333333';
-export const TEXT = '#FFFFFF';
-export const TEXT_DIM = '#888888';
-export const ACCENT = '#4A90E2';
+export const Colors = {
+  background:     '#1C1C1E',
+  card:           '#2C2C2E',
+  cardElevated:   '#3A3A3C',
+  divider:        '#3C3C3E',
+  border:         '#2C2C2E',
+  primary:        '#0D9488',
+  primaryDark:    '#1A6B60',
+  primaryDim:     '#1A4A48',
+  textPrimary:    '#FFFFFF',
+  textSecondary:  '#CCCCCC',
+  textMuted:      '#888888',
+  textDisabled:   '#555558',
+  correct:        '#22C55E',
+  wrong:          '#DC2626',
+  warning:        '#F59E0B',
+  starRed:        '#EF4444',
+  tone1:          '#EF4444',
+  tone2:          '#F97316',
+  tone3:          '#22C55E',
+  tone4:          '#3B82F6',
+  toneN:          '#888888',
+  hsk1:           '#1F7A4A',
+  hsk2:           '#4A7A1F',
+  hsk3:           '#7A6A10',
+  hsk4:           '#7A3A10',
+  hsk5:           '#7A1010',
+  hsk6:           '#501010',
+  hsk79:          '#404040',
+}
