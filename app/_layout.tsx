@@ -1,30 +1,32 @@
-import { Stack, useRouter } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, ActivityIndicator } from 'react-native';
 
 export default function Layout() {
   const router = useRouter();
+  const segments = useSegments();
   const [isReady, setIsReady] = useState(false);
+  const [initialRoute, setInitialRoute] = useState<string | null>(null);
 
   const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
-    await db.execAsync(
-      'CREATE TABLE IF NOT EXISTS user_progress (word_id TEXT PRIMARY KEY, srs_interval INTEGER DEFAULT 0, next_review INTEGER DEFAULT 0, ease_factor REAL DEFAULT 2.5);'
-    );
+    try {
+      await db.execAsync(
+        'CREATE TABLE IF NOT EXISTS user_progress (word_id TEXT PRIMARY KEY, srs_interval INTEGER DEFAULT 0, next_review INTEGER DEFAULT 0, ease_factor REAL DEFAULT 2.5);'
+      );
+    } catch (e) {
+      console.error("DB Migration error", e);
+    }
   };
 
   useEffect(() => {
     const checkOnboarding = async () => {
       try {
         const completed = await AsyncStorage.getItem('@hanzi_onboarding_complete');
-        if (completed !== 'true') {
-          router.replace('/onboarding');
-        } else {
-          router.replace('/(tabs)');
-        }
+        setInitialRoute(completed === 'true' ? '(tabs)' : 'onboarding');
       } catch (e) {
-        // Fallback to onboarding on error
-        router.replace('/onboarding');
+        setInitialRoute('onboarding');
       } finally {
         setIsReady(true);
       }
@@ -32,14 +34,33 @@ export default function Layout() {
     checkOnboarding();
   }, []);
 
+  useEffect(() => {
+    if (isReady && initialRoute) {
+      const inTabsGroup = segments[0] === '(tabs)';
+      const inOnboardingGroup = segments[0] === 'onboarding';
+      
+      if (initialRoute === '(tabs)' && !inTabsGroup) {
+        router.replace('/(tabs)');
+      } else if (initialRoute === 'onboarding' && !inOnboardingGroup) {
+        router.replace('/onboarding');
+      }
+    }
+  }, [isReady, initialRoute, segments]);
+
+  if (!isReady) {
+    return (
+      <View style={{flex: 1, backgroundColor: '#1C1C1E', justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#0D9488" />
+      </View>
+    );
+  }
+
   return (
     <SQLiteProvider databaseName="hanzi.db" assetSource={{ assetId: require('../assets/db/hanzi.db') }} onInit={migrateDbIfNeeded}>
-      {isReady && (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="onboarding" />
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-      )}
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="onboarding" />
+        <Stack.Screen name="(tabs)" />
+      </Stack>
     </SQLiteProvider>
   );
 }
