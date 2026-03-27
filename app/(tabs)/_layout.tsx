@@ -32,13 +32,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="character/[char]"
-        options={{
-          title: 'Details',
-          href: null,
-        }}
-      />
     </Tabs>
   );
 }

@@ -4,7 +4,7 @@ import { Asset } from 'expo-asset';
 
 async function copyDatabase() {
   const dbName = 'hanzi.db';
-  const dbAsset = require('../../assets/hanzi.db');
+  const dbAsset = require('../../assets/db/hanzi.db');
   
   if (!(FileSystem as any).documentDirectory) {
     throw new Error('FileSystem.documentDirectory is null');
