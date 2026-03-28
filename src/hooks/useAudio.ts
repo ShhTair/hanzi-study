@@ -1,6 +1,7 @@
 import * as Speech from 'expo-speech'
 export function useAudio() {
   const speak = (text: string, language = 'zh-CN') => {
+    Speech.stop()
     Speech.speak(text, {
       language,
       rate: 0.8,

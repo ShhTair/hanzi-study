@@ -131,7 +131,7 @@ export default function QuizScreen() {
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'quiz' } } as any);
+      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'quiz', level: levelNum, set: setNum } } as any);
     }
   };
 

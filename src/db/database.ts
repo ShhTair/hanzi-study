@@ -89,8 +89,8 @@ export async function updateSRS(word_id: string, performanceRating: number) {
   const next_review = Math.floor(Date.now() / 1000) + (interval * 86400);
 
   await db.runAsync(
-    `INSERT OR REPLACE INTO user_progress (word_id, srs_interval, next_review, ease_factor, correct, incorrect) 
-     VALUES (?, ?, ?, ?, ?, ?)`,
+    `INSERT OR REPLACE INTO user_progress (word_id, srs_interval, next_review, ease_factor, correct, incorrect, last_reviewed) 
+     VALUES (?, ?, ?, ?, ?, ?, datetime('now'))`,
     [word_id, interval, next_review, ease, correct, incorrect]
   );
 }

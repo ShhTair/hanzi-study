@@ -16,7 +16,7 @@ type ResultItem = {
 
 export default function SummaryScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams();
+  const params = useLocalSearchParams<{ results: string; mode: string; level: string; set: string }>();
   
   const [results, setResults] = useState<ResultItem[]>([]);
   const [accuracy, setAccuracy] = useState(0);
@@ -138,7 +138,7 @@ export default function SummaryScreen() {
           <Text style={styles.bottomBtnText}>FINISH</Text>
         </TouchableOpacity>
         <View style={styles.vDivider} />
-        <TouchableOpacity style={styles.bottomBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.bottomBtn} onPress={() => router.replace({ pathname: `/study/${params.mode || 'flashcard'}`, params: { level: params.level || '1', set: params.set || '0' } } as any)}>
           <Text style={styles.bottomBtnText}>REPEAT</Text>
         </TouchableOpacity>
       </View>

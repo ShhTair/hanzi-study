@@ -162,7 +162,7 @@ export default function FlashcardScreen() {
     if (currentIndex + 1 < cards.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'flashcard' } } as any);
+      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'flashcard', level: levelNum, set: setNum } } as any);
     }
   };
 
