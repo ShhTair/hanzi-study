@@ -104,3 +104,38 @@ export async function getHSKLevel(level: string | number) {
   const db = await initDB();
   return db.getAllAsync('SELECT * FROM hsk WHERE level = ? ORDER BY id', [level]);
 }
+
+export async function getWordsContaining(char: string) {
+  const db = await initDB();
+  const result = await db.getAllAsync(
+    `SELECT simplified, traditional, pinyin, meanings
+     FROM dictionary
+     WHERE simplified LIKE ? AND LENGTH(simplified) > 1
+     ORDER BY LENGTH(simplified) ASC
+     LIMIT 30`,
+    [`%${char}%`]
+  );
+  return result as any[];
+}
+
+export async function getSentencesContaining(char: string) {
+  const db = await initDB();
+  const result = await db.getAllAsync(
+    `SELECT simplified, pinyin, meanings
+     FROM dictionary
+     WHERE simplified LIKE ? AND LENGTH(simplified) >= 4
+     ORDER BY LENGTH(simplified) ASC
+     LIMIT 15`,
+    [`%${char}%`]
+  );
+  return result as any[];
+}
+
+export async function getCharacterVariants(char: string) {
+  const db = await initDB();
+  const result = await db.getFirstAsync(
+    `SELECT simplified, traditional FROM dictionary WHERE simplified = ? OR traditional = ? LIMIT 1`,
+    [char, char]
+  );
+  return result as { simplified: string; traditional: string } | null;
+}
