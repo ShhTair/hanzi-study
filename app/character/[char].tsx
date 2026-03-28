@@ -1,8 +1,6 @@
-import { Colors } from '../../src/constants/colors';
-
-import { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useLocalSearchParams, Stack } from 'expo-router';
+import { useLocalSearchParams, Stack, useRouter } from 'expo-router';
 import { useDatabase } from '../../src/hooks/useDatabase';
 import { getWordsContaining, getSentencesContaining } from '../../src/db/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,6 +16,7 @@ import Animated, {
 import { Ionicons } from '@expo/vector-icons';
 import { PinyinText } from '../../src/components/PinyinText';
 import { useAudio } from '../../src/hooks/useAudio';
+import { Colors } from '../../src/constants/colors';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const MAX_PATH_LENGTH = 3500;
@@ -52,8 +51,6 @@ function Stroke({ d, index, playTrigger }: { d: string; index: number; playTrigg
     />
   );
 }
-
-import { useRouter } from 'expo-router';
 
 export default function CharacterDetail() {
   const router = useRouter();
@@ -246,37 +243,71 @@ export default function CharacterDetail() {
           </View>
         )}
 
-        {activeTab === 'Components' && (
-          <View style={styles.componentsContainer}>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Radical</Text>
-              <Text style={styles.statValue}>{characterData.radical || '-'}</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Decomposition</Text>
-              <Text style={styles.meaningText}>{strokeData?.decomposition || '-'}</Text>
-            </View>
+        {activeTab === 'Vocab' && (
+          <View style={styles.vocabContainer}>
+            {words.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>No vocabulary found</Text>
+              </View>
+            ) : (
+              words.map((item: any, idx: number) => (
+                <TouchableOpacity 
+                  key={idx} 
+                  style={styles.wordRow}
+                  onPress={() => router.push({ pathname: '/word/[id]', params: { id: item.id?.toString() || item.rowid?.toString() || item.simplified } } as any)}
+                >
+                  <View style={styles.wordLeft}>
+                    <Text style={styles.wordSimplified}>{item.simplified}</Text>
+                  </View>
+                  <View style={styles.wordCenter}>
+                    <Text style={styles.wordPinyin}>{item.pinyin}</Text>
+                    <Text style={styles.wordMeaning} numberOfLines={1}>{item.meanings ? item.meanings.split('/')[0] : ''}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))
+            )}
           </View>
         )}
 
-        {activeTab === 'Details' && (
-          <View style={styles.statsContainer}>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Radical</Text>
-              <Text style={styles.statValue}>{characterData.radical || '-'}</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Strokes</Text>
-              <Text style={styles.statValue}>{characterData.stroke_count || '-'}</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Frequency Rank</Text>
-              <Text style={styles.statValue}>{characterData.frequency_rank || '-'}</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>Traditional Form</Text>
-              <Text style={styles.statValue}>{characterData.traditional || '-'}</Text>
-            </View>
+        {activeTab === 'Sentences' && (
+          <View style={styles.sentencesContainer}>
+            {sentences.length === 0 ? (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>No sentences found</Text>
+              </View>
+            ) : (
+              sentences.map((item: any, idx: number) => {
+                const parts = item.simplified.split(char as string);
+                return (
+                  <TouchableOpacity 
+                    key={idx} 
+                    style={styles.sentenceRow}
+                    onPress={() => {
+                      const newSentences = [...sentences];
+                      newSentences[idx].expanded = !newSentences[idx].expanded;
+                      setSentences(newSentences);
+                    }}
+                  >
+                    <Text style={styles.sentenceText}>
+                      {parts.map((part: string, pIdx: number) => (
+                        <React.Fragment key={pIdx}>
+                          {part}
+                          {pIdx < parts.length - 1 && (
+                            <Text style={styles.sentenceHighlight}>{char}</Text>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </Text>
+                    {item.expanded && (
+                      <View style={styles.sentenceExpanded}>
+                        <PinyinText pinyin={item.pinyin} size={14} style={{marginBottom: 4, justifyContent: 'flex-start'}} />
+                        <Text style={styles.sentenceTranslation}>{item.meanings ? item.meanings.split('/')[0] : ''}</Text>
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })
+            )}
           </View>
         )}
       </View>
@@ -420,4 +451,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  vocabContainer: { flex: 1, marginTop: 16 },
+  wordRow: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.card, padding: 16, borderRadius: 12, marginBottom: 8, borderWidth: 1, borderColor: Colors.border },
+  wordLeft: { width: 60 },
+  wordSimplified: { fontSize: 22, fontWeight: 'bold', color: Colors.textPrimary },
+  wordCenter: { flex: 1, paddingHorizontal: 12 },
+  wordPinyin: { fontSize: 14, color: Colors.textMuted, marginBottom: 4 },
+  wordMeaning: { fontSize: 14, color: Colors.textSecondary },
+  sentencesContainer: { flex: 1, marginTop: 16 },
+  sentenceRow: { backgroundColor: Colors.card, padding: 16, borderRadius: 12, marginBottom: 8, borderWidth: 1, borderColor: Colors.border },
+  sentenceText: { fontSize: 16, color: Colors.textPrimary, lineHeight: 24 },
+  sentenceHighlight: { color: Colors.primary, fontWeight: 'bold' },
+  sentenceExpanded: { marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: Colors.divider },
+  sentenceTranslation: { fontSize: 14, color: Colors.textSecondary },
+  emptyState: { padding: 32, alignItems: 'center' },
+  emptyStateText: { color: Colors.textMuted, fontSize: 16 },
 });
