@@ -10,6 +10,7 @@ export default function HomeTab() {
   
   const [cardsReviewed, setCardsReviewed] = useState(0);
   const [streak, setStreak] = useState(0);
+  const [displayScript, setDisplayScript] = useState<'simplified'|'traditional'>('simplified');
   const [dueToday, setDueToday] = useState(0);
   const [hskProgress, setHskProgress] = useState<{ level: number, reviewed: number, total: number }[]>([]);
 

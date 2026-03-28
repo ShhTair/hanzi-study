@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { useDatabase } from '../../src/hooks/useDatabase';
 import { getWordsContaining, getSentencesContaining } from '../../src/db/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Svg, { Path } from 'react-native-svg';
 import Animated, {
   useSharedValue,
@@ -61,6 +62,7 @@ export default function CharacterDetail() {
   const [playTrigger, setPlayTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('Meanings');
   const [isFavorite, setIsFavorite] = useState(false);
+  const [displayScript, setDisplayScript] = useState<'simplified'|'traditional'>('simplified');
   const [words, setWords] = useState<any[]>([]);
   const [sentences, setSentences] = useState<any[]>([]);
 
@@ -80,6 +82,7 @@ export default function CharacterDetail() {
       if (typeof char === 'string') {
         const data = await getCharacterDetail(char);
         setCharacterData(data);
+        AsyncStorage.getItem('@hanzi_display_script').then(val => { if (val === 'traditional') setDisplayScript('traditional'); });
         getWordsContaining(char).then(setWords);
         getSentencesContaining(char).then(setSentences);
         
@@ -122,6 +125,8 @@ export default function CharacterDetail() {
     }
     return null;
   }, [characterData]);
+
+  const displayChar = displayScript === 'traditional' && characterData?.traditional ? characterData.traditional : char;
 
   const meanings = useMemo(() => {
     if (characterData?.meanings) {
