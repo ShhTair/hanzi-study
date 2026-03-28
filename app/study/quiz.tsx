@@ -32,6 +32,7 @@ export default function QuizScreen() {
   const [combo, setCombo] = useState(0);
   
   const [time, setTime] = useState(0);
+  const [sessionResults, setSessionResults] = useState<any[]>([]);
   const [isPaused, setIsPaused] = useState(false);
 
   const comboAnim = useRef(new Animated.Value(0)).current;
@@ -108,20 +109,29 @@ export default function QuizScreen() {
         ]).start();
       }
 
-      setTimeout(() => advance(), 300);
+      setTimeout(() => advance(true), 300);
     } else {
       await updateSRS(correctWord, 1);
       setWrongCount(prev => prev + 1);
       setCombo(0);
-      setTimeout(() => advance(), 600);
+      setTimeout(() => advance(false), 600);
     }
   };
 
-  const advance = () => {
+  const advance = (wasCorrect: boolean) => {
+    const q = questions[currentIndex];
+    const newResults = [...sessionResults, {
+      word: q.word,
+      correct: wasCorrect,
+      pinyin: q.pinyin,
+      meaning: q.meaning
+    }];
+    setSessionResults(newResults);
+
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      router.push('/study/summary');
+      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'quiz' } } as any);
     }
   };
 

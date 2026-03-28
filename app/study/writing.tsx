@@ -36,6 +36,7 @@ export default function WritingScreen() {
   const [hintsUsed, setHintsUsed] = useState(0);
   
   const [showHint, setShowHint] = useState(false);
+  const [sessionResults, setSessionResults] = useState<any[]>([]);
 
   // Use the custom hook
   const {
@@ -103,26 +104,34 @@ export default function WritingScreen() {
     if (medians.length > 0 && currentStrokeIndex >= medians.length) {
       setCorrectCount(prev => prev + 1);
       setTimeout(() => {
-        advance();
+        advance(wrongCount === 0 && hintsUsed === 0);
       }, 800);
     }
   }, [currentStrokeIndex, medians]);
 
-  const advance = async () => {
-    // Optionally record SRS based on wrong attempts
+  const advance = async (wasCorrect: boolean) => {
     const rating = wrongCount === 0 && hintsUsed === 0 ? 4 : (wrongCount > 2 ? 1 : 3);
     await updateSRS(questions[currentIndex].word, rating);
+
+    const q = questions[currentIndex];
+    const newResults = [...sessionResults, {
+      word: q.word,
+      correct: wasCorrect,
+      pinyin: q.pinyin,
+      meaning: q.meaning
+    }];
+    setSessionResults(newResults);
 
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      router.push('/study/summary');
+      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'writing' } } as any);
     }
   };
 
   const skipQuestion = () => {
     setHintsUsed(prev => prev + 1);
-    advance();
+    advance(false);
   };
 
   const triggerHint = () => {

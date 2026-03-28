@@ -53,7 +53,10 @@ function Stroke({ d, index, playTrigger }: { d: string; index: number; playTrigg
   );
 }
 
+import { useRouter } from 'expo-router';
+
 export default function CharacterDetail() {
+  const router = useRouter();
   const { char } = useLocalSearchParams();
   const { db, getCharacterDetail } = useDatabase();
   const { speakCharacter } = useAudio();
@@ -210,7 +213,7 @@ export default function CharacterDetail() {
 
       {/* Tabs */}
       <View style={styles.tabBar}>
-        {['Meanings', 'Strokes', 'Components', 'Details'].map(tab => (
+        {['Meanings', 'Strokes', 'Vocab', 'Sentences'].map(tab => (
           <TouchableOpacity 
             key={tab} 
             style={[styles.tab, activeTab === tab && styles.activeTab]} 

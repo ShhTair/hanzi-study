@@ -105,7 +105,7 @@ export default function ProgressScreen() {
         const rows = await db.getAllAsync<ProgressRow>(
           `SELECT hp.word, up.correct, up.incorrect, up.next_review, up.ease_factor 
            FROM user_progress up 
-           JOIN hsk hp ON hp.id = up.word_id`
+           JOIN hsk hp ON hp.word = up.word_id`
         );
         
         let due = 0;

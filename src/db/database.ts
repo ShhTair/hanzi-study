@@ -108,7 +108,7 @@ export async function getHSKLevel(level: string | number) {
 export async function getWordsContaining(char: string) {
   const db = await initDB();
   const result = await db.getAllAsync(
-    `SELECT simplified, traditional, pinyin, meanings
+    `SELECT id, simplified, traditional, pinyin, meanings
      FROM dictionary
      WHERE simplified LIKE ? AND LENGTH(simplified) > 1
      ORDER BY LENGTH(simplified) ASC
@@ -121,7 +121,7 @@ export async function getWordsContaining(char: string) {
 export async function getSentencesContaining(char: string) {
   const db = await initDB();
   const result = await db.getAllAsync(
-    `SELECT simplified, pinyin, meanings
+    `SELECT id, simplified, pinyin, meanings
      FROM dictionary
      WHERE simplified LIKE ? AND LENGTH(simplified) >= 4
      ORDER BY LENGTH(simplified) ASC
@@ -134,7 +134,7 @@ export async function getSentencesContaining(char: string) {
 export async function getCharacterVariants(char: string) {
   const db = await initDB();
   const result = await db.getFirstAsync(
-    `SELECT simplified, traditional FROM dictionary WHERE simplified = ? OR traditional = ? LIMIT 1`,
+    `SELECT id, simplified, traditional FROM dictionary WHERE simplified = ? OR traditional = ? LIMIT 1`,
     [char, char]
   );
   return result as { simplified: string; traditional: string } | null;

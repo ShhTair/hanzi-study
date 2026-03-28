@@ -40,6 +40,7 @@ export default function FlashcardScreen() {
   const [favorited, setFavorited] = useState(false);
   
   const [strokeCount, setStrokeCount] = useState(0);
+  const [sessionResults, setSessionResults] = useState<any[]>([]);
   const animationTimer = useRef<NodeJS.Timeout | null>(null);
 
   const flipAnim = useRef(new Animated.Value(0)).current;
@@ -150,10 +151,18 @@ export default function FlashcardScreen() {
     const card = cards[currentIndex];
     await updateSRS(card.word, rating);
     
+    const newResults = [...sessionResults, {
+      word: card.word,
+      correct: rating >= 3,
+      pinyin: card.pinyin,
+      meaning: card.meaning
+    }];
+    setSessionResults(newResults);
+
     if (currentIndex + 1 < cards.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      router.push('/study/summary');
+      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'flashcard' } } as any);
     }
   };
 
