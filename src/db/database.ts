@@ -139,3 +139,26 @@ export async function getCharacterVariants(char: string) {
   );
   return result as { simplified: string; traditional: string } | null;
 }
+
+export async function toggleFavorite(word: string): Promise<boolean> {
+  const db = await initDB();
+  const exists = await db.getFirstAsync('SELECT word FROM favorites WHERE word = ?', [word]);
+  if (exists) {
+    await db.runAsync('DELETE FROM favorites WHERE word = ?', [word]);
+    return false;
+  } else {
+    await db.runAsync('INSERT INTO favorites (word, added_at) VALUES (?, ?)', [word, Math.floor(Date.now()/1000)]);
+    return true;
+  }
+}
+
+export async function isFavorite(word: string): Promise<boolean> {
+  const db = await initDB();
+  const result = await db.getFirstAsync('SELECT word FROM favorites WHERE word = ?', [word]);
+  return !!result;
+}
+
+export async function getAllFavorites() {
+  const db = await initDB();
+  return await db.getAllAsync('SELECT word, added_at FROM favorites ORDER BY added_at DESC');
+}

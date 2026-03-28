@@ -15,7 +15,7 @@ export default function Layout() {
   const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
     try {
       await db.execAsync(
-        'CREATE TABLE IF NOT EXISTS user_progress (word_id TEXT PRIMARY KEY, srs_interval INTEGER DEFAULT 0, next_review INTEGER DEFAULT 0, ease_factor REAL DEFAULT 2.5, correct INTEGER DEFAULT 0, incorrect INTEGER DEFAULT 0);'
+        'CREATE TABLE IF NOT EXISTS favorites (word TEXT PRIMARY KEY, added_at INTEGER); CREATE TABLE IF NOT EXISTS user_progress (word_id TEXT PRIMARY KEY, srs_interval INTEGER DEFAULT 0, next_review INTEGER DEFAULT 0, ease_factor REAL DEFAULT 2.5, correct INTEGER DEFAULT 0, incorrect INTEGER DEFAULT 0);'
       );
     } catch (e) {
       console.error("DB Migration error", e);
