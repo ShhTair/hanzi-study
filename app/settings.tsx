@@ -5,6 +5,8 @@ import * as SQLite from 'expo-sqlite';
 import * as DocumentPicker from 'expo-document-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../src/constants/colors';
+import { requestNotificationPermission, scheduleDailyReminder } from '../src/notifications';
+import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
@@ -33,6 +35,8 @@ export default function SettingsScreen() {
   const [swipeRightRating, setSwipeRightRating] = useState('easy');
   const [displayScript, setDisplayScript] = useState('simplified');
   const [animationSpeed, setAnimationSpeed] = useState('normal');
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [notificationHour, setNotificationHour] = useState(9);
 
   useEffect(() => {
     const load = async () => {
@@ -56,10 +60,40 @@ export default function SettingsScreen() {
 
       const anim = await AsyncStorage.getItem('@hanzi_animation_speed');
       if (anim) setAnimationSpeed(anim);
+
+      const notifs = await AsyncStorage.getItem('@hanzi_notifications_enabled');
+      if (notifs) setNotificationsEnabled(notifs === 'true');
+
+      const nHour = await AsyncStorage.getItem('@hanzi_notification_hour');
+      if (nHour) setNotificationHour(parseInt(nHour, 10));
     };
     load();
   }, []);
 
+  
+  const handleToggleNotifications = async (val: boolean) => {
+    setNotificationsEnabled(val);
+    await AsyncStorage.setItem('@hanzi_notifications_enabled', String(val));
+    if (val) {
+      const granted = await requestNotificationPermission();
+      if (granted) scheduleDailyReminder(notificationHour);
+      else {
+        setNotificationsEnabled(false);
+        await AsyncStorage.setItem('@hanzi_notifications_enabled', 'false');
+      }
+    } else {
+      await Notifications.cancelAllScheduledNotificationsAsync();
+    }
+  };
+
+  const handleChangeNotificationHour = async (hour: number) => {
+    setNotificationHour(hour);
+    await AsyncStorage.setItem('@hanzi_notification_hour', String(hour));
+    if (notificationsEnabled) {
+      scheduleDailyReminder(hour);
+    }
+  };
+  
   const updateSetting = async (key: string, value: any, setter: any) => {
     setter(value);
     await AsyncStorage.setItem(key, String(value));
@@ -200,6 +234,22 @@ export default function SettingsScreen() {
           label="Animation speed"
           value={animationSpeed.charAt(0).toUpperCase() + animationSpeed.slice(1)}
           onPress={() => showPicker('Animation speed', [{label:'Slow',value:'slow'}, {label:'Normal',value:'normal'}, {label:'Fast',value:'fast'}], (v) => updateSetting('@hanzi_animation_speed', v, setAnimationSpeed))}
+        />
+      </View>
+
+      
+      <SectionHeader title="DAILY REMINDER" />
+      <View style={styles.card}>
+        <ToggleRow 
+          label="Daily study reminder" 
+          value={notificationsEnabled} 
+          onValueChange={handleToggleNotifications}
+          borderBottom
+        />
+        <PickerRow
+          label="Reminder time"
+          value={`${notificationHour > 12 ? notificationHour - 12 : notificationHour}:00 ${notificationHour >= 12 ? 'PM' : 'AM'}`}
+          onPress={() => showPicker('Reminder time', Array.from({length: 17}, (_, i) => i + 6).map(v => ({label:`${v > 12 ? v - 12 : v}:00 ${v >= 12 ? 'PM' : 'AM'}`, value:v})), handleChangeNotificationHour)}
         />
       </View>
 
