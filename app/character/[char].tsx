@@ -52,7 +52,7 @@ function Stroke({ d, index, playTrigger }: { d: string; index: number; playTrigg
 export default function CharacterDetail() {
   const { char } = useLocalSearchParams();
   const { db, getCharacterDetail } = useDatabase();
-  const { play } = useAudio();
+  const { speakCharacter } = useAudio();
   const [characterData, setCharacterData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [playTrigger, setPlayTrigger] = useState(0);
@@ -186,7 +186,7 @@ export default function CharacterDetail() {
 
       <View style={styles.pinyinContainer}>
         <PinyinText pinyin={characterData.pinyin} size={36} />
-        <TouchableOpacity onPress={() => play(char as string)} style={{ marginLeft: 16 }}>
+        <TouchableOpacity onPress={() => speakCharacter(char as string)} style={{ marginLeft: 16 }}>
           <Ionicons name='volume-high' size={28} color='#4A90E2' />
         </TouchableOpacity>
         {characterData.hsk_level && (

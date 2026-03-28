@@ -22,7 +22,7 @@ export default function StudyScreen() {
   // Audio hook from Agent A
   // If it doesn't exist yet, we mock it gracefully to prevent crashes
   const useAudioHook = typeof useAudio === 'function' ? useAudio : () => ({ play: () => {}, isPlaying: false });
-  const { play } = useAudioHook();
+  const { speakCharacter } = useAudioHook() as any;
 
   const [level, setLevel] = useState<number | null>(null);
   const [cards, setCards] = useState<Word[]>([]);
@@ -65,7 +65,7 @@ export default function StudyScreen() {
   const handleFlip = () => {
     setIsFlipped(true);
     if (cards[currentIndex]) {
-      play(cards[currentIndex].word);
+      speakCharacter(cards[currentIndex].word);
     }
   };
 
