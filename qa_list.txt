@@ -1,0 +1,3 @@
+FAIL: app/_layout.tsx: 18 - "hanzi.db loads correctly" - table user_progress lacked columns, added manually.
+FAIL: src/db/database.ts - getCharacterByWord vs getCharacterDetail. missing searchCharacters, missing getUserProgress, etc.
+FAIL: app/(tabs)/index.tsx: 107 - "Due Today" count queries user_progress
