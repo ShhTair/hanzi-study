@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { useState, useCallback } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useDatabase } from '../../src/hooks/useDatabase';
@@ -49,11 +51,11 @@ export default function SearchTab() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, backgroundColor: '#121212' },
+  container: { flex: 1, padding: 16, backgroundColor: Colors.background },
   input: {
     height: 50,
-    backgroundColor: '#1E1E1E',
-    color: '#fff',
+    backgroundColor: Colors.card,
+    color: Colors.textPrimary,
     borderRadius: 8,
     paddingHorizontal: 16,
     marginBottom: 16,
@@ -62,14 +64,14 @@ const styles = StyleSheet.create({
     borderColor: '#333',
   },
   card: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: Colors.card,
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#333',
   },
-  hanzi: { fontSize: 24, fontWeight: 'bold', color: '#fff' },
+  hanzi: { fontSize: 24, fontWeight: 'bold', color: Colors.textPrimary },
   pinyin: { fontSize: 16, color: '#aaa', marginTop: 4 },
   meanings: { fontSize: 14, color: '#ccc', marginTop: 4 },
 });

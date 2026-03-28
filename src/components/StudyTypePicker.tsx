@@ -13,10 +13,10 @@ interface Props {
 }
 
 const MODES = [
-  { id: 'flashcard', color: '#22C55E', label: 'Flashcard study', subtitle: 'Character rote memorization', route: '/study/flashcard', locked: false },
-  { id: 'quiz', color: '#0D9488', label: 'Multiple choice', subtitle: 'Quick knowledge check', route: '/study/quiz', locked: false },
-  { id: 'writing', color: '#7C3AED', label: 'Writing challenges', subtitle: 'Stroke detection + self-check', route: '/study/writing', locked: false },
-  { id: 'guided', color: '#555558', label: 'Guided study', subtitle: 'AI guided daily mix', route: '', locked: true },
+  { id: 'flashcard', color: Colors.correct, label: 'Flashcard study', subtitle: 'Character rote memorization', route: '/study/flashcard', locked: false },
+  { id: 'quiz', color: Colors.primary, label: 'Multiple choice', subtitle: 'Quick knowledge check', route: '/study/quiz', locked: false },
+  { id: 'writing', color: Colors.primary, label: 'Writing challenges', subtitle: 'Stroke detection + self-check', route: '/study/writing', locked: false },
+  { id: 'guided', color: Colors.textDisabled, label: 'Guided study', subtitle: 'AI guided daily mix', route: '', locked: true },
 ];
 
 export function StudyTypePicker({ visible, onClose, level, setIndex, setName }: Props) {
@@ -63,7 +63,7 @@ export function StudyTypePicker({ visible, onClose, level, setIndex, setName }: 
 const styles = StyleSheet.create({
   overlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.6)' },
   sheet: { backgroundColor: Colors.card, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 32 },
-  handle: { width: 36, height: 4, backgroundColor: '#555558', borderRadius: 2, alignSelf: 'center', marginTop: 8, marginBottom: 4 },
+  handle: { width: 36, height: 4, backgroundColor: Colors.textDisabled, borderRadius: 2, alignSelf: 'center', marginTop: 8, marginBottom: 4 },
   title: { fontSize: 20, fontWeight: '700', color: Colors.textPrimary, paddingHorizontal: 20, paddingVertical: 16 },
   divider: { height: 1, backgroundColor: Colors.divider },
   row: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: Colors.divider },

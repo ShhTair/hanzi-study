@@ -1,3 +1,5 @@
+import { Colors } from '../../../src/constants/colors';
+
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface Props {
@@ -23,15 +25,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   outerActive: {
-    borderColor: '#0D9488',
+    borderColor: Colors.primary,
   },
   outerInactive: {
-    borderColor: '#808080',
+    borderColor: Colors.primary,
   },
   inner: {
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#0D9488',
+    backgroundColor: Colors.primary,
   },
 });

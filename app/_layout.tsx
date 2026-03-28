@@ -1,3 +1,5 @@
+import { Colors } from '../src/constants/colors';
+
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { SQLiteProvider, type SQLiteDatabase } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
@@ -79,7 +81,7 @@ export default function Layout() {
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
     justifyContent: 'center',
     alignItems: 'center',
   },

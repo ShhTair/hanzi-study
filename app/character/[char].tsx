@@ -1,7 +1,10 @@
+import { Colors } from '../../src/constants/colors';
+
 import { useEffect, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useLocalSearchParams, Stack } from 'expo-router';
 import { useDatabase } from '../../src/hooks/useDatabase';
+import { getWordsContaining, getSentencesContaining } from '../../src/db/database';
 import Svg, { Path } from 'react-native-svg';
 import Animated, {
   useSharedValue,
@@ -58,6 +61,8 @@ export default function CharacterDetail() {
   const [playTrigger, setPlayTrigger] = useState(0);
   const [activeTab, setActiveTab] = useState('Meanings');
   const [isFavorite, setIsFavorite] = useState(false);
+  const [words, setWords] = useState<any[]>([]);
+  const [sentences, setSentences] = useState<any[]>([]);
 
   useEffect(() => {
     async function initFavoriteSchema() {
@@ -75,6 +80,8 @@ export default function CharacterDetail() {
       if (typeof char === 'string') {
         const data = await getCharacterDetail(char);
         setCharacterData(data);
+        getWordsContaining(char).then(setWords);
+        getSentencesContaining(char).then(setSentences);
         
         try {
           const row = await db.getFirstAsync<{ is_favorite: number }>('SELECT is_favorite FROM user_progress WHERE word_id = ?', [char as string]);
@@ -148,11 +155,11 @@ export default function CharacterDetail() {
       <Stack.Screen 
         options={{ 
           title: char as string, 
-          headerStyle: { backgroundColor: '#121212' }, 
-          headerTintColor: '#fff',
+          headerStyle: { backgroundColor: Colors.background }, 
+          headerTintColor: Colors.textPrimary,
           headerRight: () => (
             <TouchableOpacity onPress={toggleFavorite} style={{ marginRight: 15 }}>
-              <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? '#ff4d4f' : '#fff'} />
+              <Ionicons name={isFavorite ? 'heart' : 'heart-outline'} size={24} color={isFavorite ? Colors.wrong : Colors.textPrimary} />
             </TouchableOpacity>
           )
         }} 
@@ -187,7 +194,7 @@ export default function CharacterDetail() {
       <View style={styles.pinyinContainer}>
         <PinyinText pinyin={characterData.pinyin} size={36} />
         <TouchableOpacity onPress={() => speakCharacter(char as string)} style={{ marginLeft: 16 }}>
-          <Ionicons name='volume-high' size={28} color='#4A90E2' />
+          <Ionicons name='volume-high' size={28} color={Colors.primary} />
         </TouchableOpacity>
         {characterData.hsk_level && (
           <View style={styles.hskBadge}>
@@ -272,17 +279,17 @@ export default function CharacterDetail() {
 const styles = StyleSheet.create({
   center: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: Colors.background,
     justifyContent: 'center',
     alignItems: 'center',
   },
   errorText: {
-    color: '#ff6b6b',
+    color: Colors.wrong,
     fontSize: 18,
   },
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: Colors.background,
   },
   content: {
     padding: 20,
@@ -291,7 +298,7 @@ const styles = StyleSheet.create({
   svgContainer: {
     width: '100%',
     aspectRatio: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: Colors.card,
     borderRadius: 16,
     borderWidth: 1,
     borderColor: '#333',
@@ -306,14 +313,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   hskBadge: {
-    backgroundColor: '#2b5c8f',
+    backgroundColor: Colors.primary,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 6,
     marginLeft: 16,
   },
   hskText: {
-    color: '#fff',
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: 'bold',
   },
@@ -330,15 +337,15 @@ const styles = StyleSheet.create({
   },
   activeTab: {
     borderBottomWidth: 2,
-    borderBottomColor: '#4A90E2',
+    borderBottomColor: Colors.primary,
   },
   tabText: {
-    color: '#888',
+    color: Colors.textMuted,
     fontSize: 14,
     fontWeight: '600',
   },
   activeTabText: {
-    color: '#4A90E2',
+    color: Colors.primary,
   },
   detailsContainer: {
     flex: 1,
@@ -368,7 +375,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   playButtonText: {
-    color: '#fff',
+    color: Colors.textPrimary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -386,21 +393,21 @@ const styles = StyleSheet.create({
   },
   statBox: {
     width: '48%',
-    backgroundColor: '#1E1E1E',
+    backgroundColor: Colors.card,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 8,
   },
   statLabel: {
-    color: '#888',
+    color: Colors.textMuted,
     fontSize: 12,
     marginBottom: 4,
     textTransform: 'uppercase',
     textAlign: 'center',
   },
   statValue: {
-    color: '#fff',
+    color: Colors.textPrimary,
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',

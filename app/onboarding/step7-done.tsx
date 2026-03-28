@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
@@ -45,7 +47,7 @@ export default function Step7() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   ensoCircle: {
     position: 'absolute',
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.textPrimary,
     opacity: 0.08,
   },
   topSection: {
@@ -67,7 +69,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textAlign: 'center',
     fontFamily: 'monospace',
     lineHeight: 32,
@@ -85,9 +87,9 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   unlocked: {
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
   },
   locked: {
-    color: '#555558',
+    color: Colors.textDisabled,
   },
 });

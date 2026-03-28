@@ -264,20 +264,20 @@ const styles = StyleSheet.create({
   center: { justifyContent: 'center', alignItems: 'center' },
   header: {
     height: 60,
-    backgroundColor: '#475569',
+    backgroundColor: Colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
   },
   statBox: { flexDirection: 'row', alignItems: 'center', marginRight: 16 },
-  statText: { color: '#FFF', fontSize: 16, fontWeight: 'bold', marginLeft: 4 },
+  statText: { color: Colors.textPrimary, fontSize: 16, fontWeight: 'bold', marginLeft: 4 },
   topArea: {
     paddingVertical: 32,
     alignItems: 'center',
   },
   meaningText: { color: Colors.textSecondary, fontSize: 18, textAlign: 'center' },
   canvas: {
-    backgroundColor: '#2A2A2A',
+    backgroundColor: Colors.primary,
     borderRadius: 8,
     overflow: 'hidden',
     position: 'relative',

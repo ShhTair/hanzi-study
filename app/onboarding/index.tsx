@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { useState } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -129,17 +131,17 @@ export default function OnboardingShell() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   container: {
     flex: 1,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   bottomBar: {
     height: 64,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
     borderTopWidth: 1,
-    borderTopColor: '#2C2C2E',
+    borderTopColor: Colors.card,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -153,13 +155,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   btnText: {
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     fontSize: 14,
     fontWeight: '700',
     letterSpacing: 1,
   },
   btnArrow: {
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     fontSize: 32,
     fontWeight: '300',
     lineHeight: 34,
@@ -174,12 +176,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   dotActive: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.textPrimary,
     borderWidth: 0,
   },
   dotInactive: {
     backgroundColor: 'transparent',
     borderWidth: 1.5,
-    borderColor: '#555558',
+    borderColor: Colors.textDisabled,
   },
 });

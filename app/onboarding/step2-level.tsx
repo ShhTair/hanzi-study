@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { View, Text, StyleSheet } from 'react-native';
 import { OnboardingCard } from '../../src/components/onboarding/OnboardingCard';
 import { OptionRow } from '../../src/components/onboarding/OptionRow';
@@ -51,12 +53,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 32,
     marginTop: '-40%',

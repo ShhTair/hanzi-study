@@ -7,38 +7,38 @@ export default function TabLayout() {
     <Tabs 
       screenOptions={{ 
         headerShown: true, 
-        tabBarStyle: { backgroundColor: '#1C1C1E', borderTopColor: '#2C2C2E' }, 
-        headerStyle: { backgroundColor: '#1C1C1E' }, 
-        headerTintColor: '#fff', 
+        tabBarStyle: { backgroundColor: Colors.background, borderTopColor: Colors.card }, 
+        headerStyle: { backgroundColor: Colors.background }, 
+        headerTintColor: Colors.textPrimary, 
         tabBarActiveTintColor: Colors.primary, 
-        tabBarInactiveTintColor: '#888' 
+        tabBarInactiveTintColor: Colors.textMuted 
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          tabBarLabel: 'Home',
           tabBarIcon: ({ color, size }) => <Ionicons name="home" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="study"
         options={{
-          title: 'Study',
+          tabBarLabel: 'Study',
           tabBarIcon: ({ color, size }) => <Ionicons name="book" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: 'Search',
+          tabBarLabel: 'Search',
           tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="lists"
         options={{
-          title: 'Lists',
+          tabBarLabel: 'Lists',
           tabBarIcon: ({ color, size }) => <Ionicons name="list" size={size} color={color} />,
         }}
       />

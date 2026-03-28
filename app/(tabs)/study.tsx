@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { useState, useRef, useEffect } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
@@ -281,13 +283,13 @@ export default function StudyScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: Colors.background,
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
   },
   title: {
-    color: '#ffffff',
+    color: Colors.textPrimary,
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 30,
@@ -299,22 +301,22 @@ const styles = StyleSheet.create({
     gap: 15,
   },
   levelButton: {
-    backgroundColor: '#1E1E1E',
+    backgroundColor: Colors.card,
     paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#333333',
+    borderColor: Colors.divider,
     minWidth: 100,
     alignItems: 'center',
   },
   levelButtonText: {
-    color: '#ffffff',
+    color: Colors.textPrimary,
     fontSize: 18,
     fontWeight: '600',
   },
   progressText: {
-    color: '#888888',
+    color: Colors.textMuted,
     fontSize: 16,
     marginBottom: 20,
   },
@@ -324,17 +326,17 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: Colors.card,
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
     borderWidth: 1,
-    borderColor: '#333333',
+    borderColor: Colors.divider,
   },
   cardWord: {
     fontSize: 80,
-    color: '#ffffff',
+    color: Colors.textPrimary,
     fontWeight: 'bold',
     marginBottom: 20,
   },
@@ -344,27 +346,27 @@ const styles = StyleSheet.create({
   },
   cardPinyin: {
     fontSize: 28,
-    color: '#4A90E2',
+    color: Colors.primary,
     marginBottom: 10,
   },
   cardMeaning: {
     fontSize: 20,
-    color: '#cccccc',
+    color: Colors.textSecondary,
     textAlign: 'center',
     marginBottom: 20,
   },
   badge: {
-    backgroundColor: '#333333',
+    backgroundColor: Colors.divider,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 12,
   },
   badgeText: {
-    color: '#ffffff',
+    color: Colors.textPrimary,
     fontSize: 14,
   },
   hintText: {
-    color: '#666666',
+    color: Colors.primary,
     fontSize: 16,
     marginTop: 20,
   },
@@ -381,13 +383,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
   },
-  btn1: { backgroundColor: '#D95F45' }, // Red (Forgot)
-  btn2: { backgroundColor: '#E8A838' }, // Orange (Hard)
-  btn3: { backgroundColor: '#F1C40F' }, // Yellow (Good)
-  btn4: { backgroundColor: '#82C070' }, // Light Green (Easy)
-  btn5: { backgroundColor: '#5BA85A' }, // Green (Perfect)
+  btn1: { backgroundColor: Colors.primary }, // Red (Forgot)
+  btn2: { backgroundColor: Colors.primary }, // Orange (Hard)
+  btn3: { backgroundColor: Colors.primary }, // Yellow (Good)
+  btn4: { backgroundColor: Colors.primary }, // Light Green (Easy)
+  btn5: { backgroundColor: Colors.primary }, // Green (Perfect)
   buttonText: {
-    color: '#ffffff',
+    color: Colors.textPrimary,
     fontSize: 12,
     fontWeight: 'bold',
   },

@@ -91,3 +91,11 @@ const styles = StyleSheet.create({
   label: { fontSize: 16, color: Colors.textPrimary },
   dangerLabel: { fontSize: 16, color: Colors.wrong },
 });
+
+// @hanzi_daily_target
+// @hanzi_end_of_day_hour
+// @hanzi_swipe_right_rating
+// @hanzi_display_script
+// @hanzi_animation_speed
+// @hanzi_notifications_enabled
+// @hanzi_notification_hour

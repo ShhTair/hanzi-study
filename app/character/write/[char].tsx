@@ -1,3 +1,5 @@
+import { Colors } from '../../../src/constants/colors';
+
 import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, PanResponder, Text, TouchableOpacity, Dimensions } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
@@ -108,10 +110,10 @@ export default function WriteCanvasScreen() {
         </TouchableOpacity>
 
         <View style={styles.ratingRow}>
-          <TouchableOpacity style={[styles.rateButton, { backgroundColor: '#FF4444' }]} onPress={() => handleRating('wrong')}>
+          <TouchableOpacity style={[styles.rateButton, { backgroundColor: Colors.wrong }]} onPress={() => handleRating('wrong')}>
             <Text style={styles.buttonText}>I wrote it wrong</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.rateButton, { backgroundColor: '#44FF44' }]} onPress={() => handleRating('perfect')}>
+          <TouchableOpacity style={[styles.rateButton, { backgroundColor: Colors.correct }]} onPress={() => handleRating('perfect')}>
             <Text style={styles.buttonText}>I wrote it perfectly</Text>
           </TouchableOpacity>
         </View>
@@ -121,12 +123,12 @@ export default function WriteCanvasScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#121212', alignItems: 'center', justifyContent: 'center' },
-  title: { color: '#FFF', fontSize: 24, marginBottom: 20 },
+  container: { flex: 1, backgroundColor: Colors.background, alignItems: 'center', justifyContent: 'center' },
+  title: { color: Colors.textPrimary, fontSize: 24, marginBottom: 20 },
   canvasContainer: {
     width: CANVAS_SIZE,
     height: CANVAS_SIZE,
-    backgroundColor: '#1E1E1E',
+    backgroundColor: Colors.card,
     position: 'relative',
     borderWidth: 1,
     borderColor: '#555',
@@ -138,5 +140,5 @@ const styles = StyleSheet.create({
   animButton: { padding: 12, backgroundColor: '#333', borderRadius: 8, marginBottom: 20, width: '100%', alignItems: 'center' },
   ratingRow: { flexDirection: 'row', justifyContent: 'space-between', width: '100%' },
   rateButton: { padding: 15, borderRadius: 8, flex: 0.48, alignItems: 'center' },
-  buttonText: { color: '#FFF', fontWeight: 'bold' },
+  buttonText: { color: Colors.textPrimary, fontWeight: 'bold' },
 });

@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { OnboardingCard } from '../../src/components/onboarding/OnboardingCard';
 
@@ -50,12 +52,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 32,
     marginTop: '-25%',
@@ -73,16 +75,16 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     marginBottom: 8,
   },
   bodyText: {
     fontSize: 14,
-    color: '#AAAAAA',
+    color: Colors.primary,
     lineHeight: 20,
   },
   studyBtn: {
-    backgroundColor: '#3A3A3C',
+    backgroundColor: Colors.cardElevated,
     borderRadius: 6,
     paddingHorizontal: 14,
     paddingVertical: 8,
@@ -90,10 +92,10 @@ const styles = StyleSheet.create({
   studyBtnText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
   },
   divider: {
     height: 1,
-    backgroundColor: '#3C3C3E',
+    backgroundColor: Colors.divider,
   },
 });

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator }
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import * as SQLite from 'expo-sqlite';
 import { PinyinText } from '../../src/components/PinyinText';
+import { StudyTypePicker } from '../../src/components/StudyTypePicker';
 import { Colors } from '../../src/constants/colors';
 
 type HskCharacter = {
@@ -16,6 +17,7 @@ export default function HskLevelScreen() {
   const router = useRouter();
   const [characters, setCharacters] = useState<HskCharacter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pickerVisible, setPickerVisible] = useState(false);
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -72,6 +74,8 @@ export default function HskLevelScreen() {
           columnWrapperStyle={styles.row}
         />
       )}
+      <TouchableOpacity style={{ padding: 16, backgroundColor: Colors.primary, margin: 16, borderRadius: 8 }} onPress={() => setPickerVisible(true)}><Text style={{ color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>STUDY</Text></TouchableOpacity>
+      <StudyTypePicker visible={pickerVisible} onClose={() => setPickerVisible(false)} level={level as string} setIndex={0} setName={`HSK ${level}`} />
     </View>
   );
 }

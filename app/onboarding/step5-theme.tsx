@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { RadioButton } from '../../src/components/onboarding/RadioButton';
@@ -9,10 +11,10 @@ interface Props {
 
 function ThemeCard({ type, selected, onPress }: { type: 'dark'|'light'; selected: boolean; onPress: () => void }) {
   const isDark = type === 'dark';
-  const headerBg = isDark ? '#1C1C1E' : '#5B8FA8';
-  const contentBg = isDark ? '#1C1C1E' : '#F2F2F7';
-  const charBoxBg = isDark ? '#2C2C2E' : '#FFFFFF';
-  const textColor = isDark ? '#FFFFFF' : '#000000';
+  const headerBg = isDark ? Colors.background : Colors.primary;
+  const contentBg = isDark ? Colors.background : Colors.primary;
+  const charBoxBg = isDark ? Colors.card : Colors.textPrimary;
+  const textColor = isDark ? Colors.textPrimary : Colors.primary;
 
   return (
     <View style={styles.cardWrapper}>
@@ -56,12 +58,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 32,
     marginTop: '-35%',
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: '#3C3C3E',
+    borderColor: Colors.divider,
   },
   cardHeader: {
     paddingHorizontal: 16,
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
   headerLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
   },
   cardContent: {
     padding: 12,
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#0D9488',
+    backgroundColor: Colors.primary,
     position: 'absolute',
     bottom: 6,
     left: 6,
@@ -123,14 +125,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   badge: {
-    backgroundColor: '#0D9488',
+    backgroundColor: Colors.primary,
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 4,
     marginTop: 6,
   },
   badgeText: {
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     fontSize: 13,
     fontWeight: '600',
   },

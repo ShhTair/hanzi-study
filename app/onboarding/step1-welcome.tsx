@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { View, Text, StyleSheet } from 'react-native';
 import { OnboardingCard } from '../../src/components/onboarding/OnboardingCard';
 
@@ -32,14 +34,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 32,
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   ensoCircle: {
     position: 'absolute',
     width: 220,
     height: 220,
     borderRadius: 110,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: Colors.textPrimary,
     opacity: 0.08,
     transform: [{ translateY: -60 }],
   },
@@ -50,13 +52,13 @@ const styles = StyleSheet.create({
   titleHanzi: {
     fontSize: 56,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 18,
     fontFamily: 'monospace',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     letterSpacing: 3,
     marginBottom: 48,
   },
@@ -65,13 +67,13 @@ const styles = StyleSheet.create({
   },
   para1: {
     fontSize: 15,
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     lineHeight: 22,
     marginBottom: 16,
   },
   para2: {
     fontSize: 15,
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     lineHeight: 22,
   },
 });

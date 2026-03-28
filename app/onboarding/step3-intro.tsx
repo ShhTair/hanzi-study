@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { View, Text, StyleSheet } from 'react-native';
 import { OnboardingCard } from '../../src/components/onboarding/OnboardingCard';
 
@@ -28,12 +30,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 32,
     marginTop: '-40%',
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
   },
   para: {
     fontSize: 15,
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     lineHeight: 22,
     marginBottom: 16,
   },

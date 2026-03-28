@@ -1,3 +1,5 @@
+import { Colors } from '../../../src/constants/colors';
+
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { RadioButton } from './RadioButton';
 
@@ -39,21 +41,21 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     marginBottom: 4,
   },
   preview: {
     fontSize: 14,
-    color: '#0D9488',
+    color: Colors.primary,
     marginBottom: 4,
   },
   description: {
     fontSize: 14,
-    color: '#AAAAAA',
+    color: Colors.primary,
     lineHeight: 20,
   },
   divider: {
     height: 1,
-    backgroundColor: '#3C3C3E',
+    backgroundColor: Colors.divider,
   },
 });

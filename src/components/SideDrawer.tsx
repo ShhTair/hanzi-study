@@ -150,7 +150,7 @@ function NavItem({ icon, textIcon, color, label, badge, locked, onPress }: any) 
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000000',
+    backgroundColor: Colors.primary,
   },
   drawer: {
     ...StyleSheet.absoluteFillObject,
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   },
   starValue: {
     fontSize: 18,
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     marginLeft: 4,
   },
   statsRow: {
@@ -215,11 +215,11 @@ const styles = StyleSheet.create({
   textIcon: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
   },
   navLabel: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     marginLeft: 14,
     flex: 1,
   },

@@ -1,3 +1,5 @@
+import { Colors } from '../../src/constants/colors';
+
 import { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { OnboardingCard } from '../../src/components/onboarding/OnboardingCard';
@@ -79,12 +81,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'center',
-    backgroundColor: '#1C1C1E',
+    backgroundColor: Colors.background,
   },
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textAlign: 'center',
     marginBottom: 32,
     marginTop: '-30%',
@@ -97,7 +99,7 @@ const styles = StyleSheet.create({
   seeMoreText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
     textTransform: 'uppercase',
   },
 });
