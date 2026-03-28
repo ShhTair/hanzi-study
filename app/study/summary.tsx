@@ -4,6 +4,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import Svg, { Circle } from 'react-native-svg';
 import { Colors } from '../../src/constants/colors';
 import { PinyinText } from '../../src/components/PinyinText';
+import { updateStreak } from '../../src/hooks/useStreak';
 import { Ionicons } from '@expo/vector-icons';
 
 type ResultItem = {
@@ -33,6 +34,7 @@ export default function SummaryScreen() {
         const acc = total > 0 ? Math.round((correctCount / total) * 100) : 0;
         
         setAccuracy(acc);
+        updateStreak();
         
         if (acc >= 90) { setGrade('A'); setMessage('完美！Wánměi!'); }
         else if (acc >= 80) { setGrade('B'); setMessage('不错！Bùcuò!'); }

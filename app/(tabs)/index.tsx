@@ -3,6 +3,7 @@ import { useRouter } from 'expo-router';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Colors } from '../../src/constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeTab() {
   const router = useRouter();
@@ -42,15 +43,12 @@ export default function HomeTab() {
         if (isMounted && reviewedResult) setCardsReviewed(reviewedResult.count);
 
         // Query 2: Due for review today (fallback simple logic if next_review is ms timestamp or date string)
-        const dueResult = await tryQuery<{ count: number }>("SELECT count(*) as count FROM user_progress WHERE next_review <= strftime('%s', 'now') * 1000 OR next_review <= date('now')");
+        const dueResult = await tryQuery<{ count: number }>("SELECT count(*) as count FROM user_progress WHERE next_review <= strftime('%s', 'now')");
         if (isMounted && dueResult) setDueToday(dueResult.count);
 
         // Query 3: Streak (naive based on unique days in last_reviewed)
-        const datesResult = await tryAllQuery<{ date: string }>("SELECT DISTINCT DATE(last_reviewed) as date FROM user_progress WHERE last_reviewed IS NOT NULL ORDER BY date DESC");
-        // Simple streak calculation
-        if (isMounted && datesResult) {
-          setStreak(datesResult.length); // Fallback logic
-        }
+        const streakVal = await AsyncStorage.getItem('@hanzi_streak');
+        if (isMounted && streakVal) setStreak(parseInt(streakVal, 10));
 
         // Query 4: HSK Progress
         const progressResult = await tryAllQuery<{ level: number, reviewed: number, total: number }>(`
