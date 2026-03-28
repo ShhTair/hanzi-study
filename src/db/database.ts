@@ -56,3 +56,51 @@ export async function searchCharacters(query: string) {
     [wildcard, wildcard, wildcard]
   );
 }
+
+export async function updateSRS(word_id: string, performanceRating: number) {
+  const db = await initDB();
+  const current = await db.getFirstAsync<any>(
+    'SELECT * FROM user_progress WHERE word_id = ?',
+    [word_id]
+  );
+  
+  let ease = current ? current.ease_factor : 2.5;
+  let interval = current ? current.srs_interval : 0;
+  let correct = current ? current.correct || 0 : 0;
+  let incorrect = current ? current.incorrect || 0 : 0;
+
+  if (performanceRating >= 3) {
+    if (interval === 0) {
+      interval = 1;
+    } else if (interval === 1) {
+      interval = 6;
+    } else {
+      interval = Math.round(interval * ease);
+    }
+    correct++;
+  } else {
+    interval = 1;
+    incorrect++;
+  }
+
+  ease = ease + (0.1 - (5 - performanceRating) * (0.08 + (5 - performanceRating) * 0.02));
+  if (ease < 1.3) ease = 1.3;
+
+  const next_review = Math.floor(Date.now() / 1000) + (interval * 86400);
+
+  await db.runAsync(
+    `INSERT OR REPLACE INTO user_progress (word_id, srs_interval, next_review, ease_factor, correct, incorrect) 
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [word_id, interval, next_review, ease, correct, incorrect]
+  );
+}
+
+export async function getUserProgress() {
+  const db = await initDB();
+  return db.getAllAsync('SELECT * FROM user_progress');
+}
+
+export async function getHSKLevel(level: string | number) {
+  const db = await initDB();
+  return db.getAllAsync('SELECT * FROM hsk WHERE level = ? ORDER BY id', [level]);
+}
