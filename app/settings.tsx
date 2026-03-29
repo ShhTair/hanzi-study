@@ -30,6 +30,7 @@ export default function SettingsScreen() {
   // State for all settings
   const [showPinyin, setShowPinyin] = useState(false);
   const [showToneColors, setShowToneColors] = useState(true);
+  const [autoPlayAudio, setAutoPlayAudio] = useState(false);
   const [dailyTarget, setDailyTarget] = useState(20);
   const [endOfDayHour, setEndOfDayHour] = useState(3);
   const [swipeRightRating, setSwipeRightRating] = useState('easy');
@@ -45,6 +46,9 @@ export default function SettingsScreen() {
       
       const tones = await AsyncStorage.getItem('@hanzi_show_tone_colors');
       setShowToneColors(tones !== 'false');
+      
+      const autoPlay = await AsyncStorage.getItem('@hanzi_auto_play_audio');
+      setAutoPlayAudio(autoPlay === 'true');
 
       const dt = await AsyncStorage.getItem('@hanzi_daily_target');
       if (dt) setDailyTarget(parseInt(dt, 10));
@@ -201,6 +205,12 @@ export default function SettingsScreen() {
           label="Show tone colors" 
           value={showToneColors} 
           onValueChange={(v: boolean) => updateSetting('@hanzi_show_tone_colors', v, setShowToneColors)}
+          borderBottom
+        />
+        <ToggleRow 
+          label="Auto-play audio on flip" 
+          value={autoPlayAudio} 
+          onValueChange={(v: boolean) => updateSetting('@hanzi_auto_play_audio', v, setAutoPlayAudio)}
           borderBottom
         />
         <PickerRow

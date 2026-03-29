@@ -23,7 +23,7 @@ type Graphics = {
 
 export default function FlashcardScreen() {
   const router = useRouter();
-  const { level, set } = useLocalSearchParams();
+  const { mode, level, set } = useLocalSearchParams<{ mode?: string; level?: string; set?: string }>();
   const levelNum = Number(level) || 1;
   const setNum = Number(set) || 0;
 
@@ -33,6 +33,7 @@ export default function FlashcardScreen() {
   
   const [isFlipped, setIsFlipped] = useState(false);
   const [showPinyinBefore, setShowPinyinBefore] = useState(false);
+  const [autoPlayAudio, setAutoPlayAudio] = useState(false);
   
   const [graphics, setGraphics] = useState<Graphics | null>(null);
   const [vocab, setVocab] = useState<any[]>([]);
@@ -53,12 +54,26 @@ export default function FlashcardScreen() {
       try {
         const pinyinSetting = await AsyncStorage.getItem('@hanzi_show_pinyin_before_flip');
         setShowPinyinBefore(pinyinSetting === 'true');
+        const autoPlaySetting = await AsyncStorage.getItem('@hanzi_auto_play_audio');
+        setAutoPlayAudio(autoPlaySetting === 'true');
 
         const db = await SQLite.openDatabaseAsync('hanzi.db');
-        const chars = await db.getAllAsync<Word>(
-          'SELECT word, pinyin, meaning, level FROM hsk WHERE level = ? LIMIT 10 OFFSET ?',
-          [levelNum, setNum * 10]
-        );
+        let chars;
+        if (mode === 'due') {
+          chars = await db.getAllAsync<Word>(`
+            SELECT h.word, h.pinyin, h.meaning, h.level
+            FROM user_progress up
+            JOIN hsk h ON h.word = up.word_id
+            WHERE up.next_review <= strftime('%s', 'now')
+            ORDER BY up.next_review ASC
+            LIMIT 50
+          `);
+        } else {
+          chars = await db.getAllAsync<Word>(
+            'SELECT word, pinyin, meaning, level FROM hsk WHERE level = ? LIMIT 10 OFFSET ?',
+            [levelNum, setNum * 10]
+          );
+        }
         setCards(chars);
       } catch (e) {
         console.error(e);
@@ -133,8 +148,8 @@ export default function FlashcardScreen() {
       easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     }).start();
-    if (cards[currentIndex]) {
-      speakCharacter(cards[currentIndex].word);
+    if (autoPlayAudio && cards[currentIndex]) {
+      setTimeout(() => speakCharacter(cards[currentIndex].word), 400);
     }
   };
 
@@ -203,7 +218,7 @@ export default function FlashcardScreen() {
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#FFF" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>HSK {levelNum} Set {setNum}</Text>
+        {mode === 'due' ? <Text style={styles.headerTitle}>Due Today</Text> : <Text style={styles.headerTitle}>HSK {levelNum} Set {setNum}</Text>}
         <Text style={styles.counter}>{currentIndex + 1}/{cards.length}</Text>
       </View>
 

@@ -5,12 +5,39 @@ import * as SQLite from 'expo-sqlite';
 import { PinyinText } from '../../src/components/PinyinText';
 import { StudyTypePicker } from '../../src/components/StudyTypePicker';
 import { Colors } from '../../src/constants/colors';
+import { Ionicons } from '@expo/vector-icons';
 
 type HskCharacter = {
+  ease_factor?: number;
   word: string;
   pinyin: string;
   meaning: string;
 };
+
+function getRating(easeFactor: number | null): number {
+  if (!easeFactor) return 0;
+  if (easeFactor < 1.5) return 0;
+  if (easeFactor < 2.0) return 1;
+  if (easeFactor < 2.5) return 2;
+  if (easeFactor < 3.0) return 3;
+  if (easeFactor < 3.5) return 4;
+  return 5;
+}
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <View style={{ flexDirection: 'row', gap: 2, marginVertical: 4 }}>
+      {[1, 2, 3, 4, 5].map(i => (
+        <Ionicons
+          key={i}
+          name={i <= rating ? 'star' : 'star-outline'}
+          size={10}
+          color={i <= rating ? Colors.primary : Colors.textMuted}
+        />
+      ))}
+    </View>
+  );
+}
 
 export default function HskLevelScreen() {
   const { level } = useLocalSearchParams();
@@ -24,7 +51,7 @@ export default function HskLevelScreen() {
       try {
         const db = await SQLite.openDatabaseAsync('hanzi.db');
         const results = await db.getAllAsync<HskCharacter>(
-          'SELECT word, pinyin, meaning FROM hsk WHERE level = ?',
+          'SELECT h.word, h.pinyin, h.meaning, u.ease_factor FROM hsk h LEFT JOIN user_progress u ON h.word = u.word_id WHERE h.level = ?',
           [level as string]
         );
         setCharacters(results);
@@ -51,6 +78,7 @@ export default function HskLevelScreen() {
       >
         <Text style={styles.charText}>{item.word}</Text>
         <PinyinText pinyin={item.pinyin} size={14} style={styles.pinyinContainer} />
+        <StarRating rating={getRating(item.ease_factor || null)} />
         <View style={styles.badge}>
           <Text style={styles.badgeText}>HSK {level}</Text>
         </View>

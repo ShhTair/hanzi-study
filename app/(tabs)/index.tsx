@@ -130,7 +130,7 @@ export default function HomeTab() {
 
       {/* Section 4: Quick Actions */}
       <View style={styles.actionsContainer}>
-        <TouchableOpacity style={styles.actionBtn} onPress={() => router.push('/study')}>
+        <TouchableOpacity style={styles.actionBtn} onPress={() => router.push({ pathname: '/study/flashcard', params: { mode: 'due', level: 'all' } } as any)}>
           <Text style={styles.actionBtnText}>Continue Studying</Text>
         </TouchableOpacity>
         <TouchableOpacity style={[styles.actionBtn, styles.actionBtnSecondary]} onPress={() => router.push('/lists')}>
