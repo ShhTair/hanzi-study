@@ -15,6 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { PinyinText } from '../../src/components/PinyinText';
+import decompData from '../../src/data/decompositions.json';
 import { AddToSetModal } from '../../src/components/AddToSetModal';
 import { useAudio } from '../../src/hooks/useAudio';
 import { Colors } from '../../src/constants/colors';
@@ -309,7 +310,7 @@ export default function CharacterDetail() {
 
       {/* Tabs */}
       <View style={styles.tabBar}>
-        {['Meanings', 'Strokes', 'Vocab', 'Sentences'].map(tab => (
+        {['Meanings', 'Strokes', 'Radicals', 'Vocab', 'Sentences'].map(tab => (
           <TouchableOpacity 
             key={tab} 
             style={[styles.tab, activeTab === tab && styles.activeTab]} 
@@ -350,6 +351,28 @@ export default function CharacterDetail() {
               </TouchableOpacity>
             </View>
             <Text style={styles.statLabel}>Total Strokes: {characterData.stroke_count || '-'}</Text>
+          </View>
+        )}
+
+        
+        {activeTab === 'Radicals' && (
+          <View style={styles.sentencesContainer}>
+            {((decompData as any)[char as string]) ? (
+              <View style={styles.card}>
+                <Text style={styles.meaningText}>{((decompData as any)[char as string]).note}</Text>
+                <View style={{ flexDirection: 'row', gap: 16, marginTop: 16, justifyContent: 'center' }}>
+                  {((decompData as any)[char as string]).parts.map((part: string, i: number) => (
+                    <TouchableOpacity key={i} onPress={() => router.push('/character/' + part)} style={styles.chip}>
+                      <Text style={styles.chipText}>{part}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            ) : (
+              <View style={styles.emptyState}>
+                <Text style={styles.emptyStateText}>No decomposition data available.</Text>
+              </View>
+            )}
           </View>
         )}
 
@@ -414,6 +437,10 @@ export default function CharacterDetail() {
 }
 
 const styles = StyleSheet.create({
+  card: { backgroundColor: Colors.card, padding: 24, borderRadius: 12 },
+  chip: { backgroundColor: Colors.cardElevated, padding: 16, borderRadius: 12 },
+  chipText: { fontSize: 24, color: Colors.textPrimary },
+
   center: {
     flex: 1,
     backgroundColor: Colors.background,

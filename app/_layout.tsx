@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { DrawerProvider } from '../src/context/DrawerContext';
+import { ThemeProvider } from '../src/context/ThemeContext';
 import { SideDrawer } from '../src/components/SideDrawer';
 
 export default function Layout() {
@@ -66,6 +67,7 @@ CREATE TABLE IF NOT EXISTS custom_set_chars (set_id INTEGER NOT NULL, word TEXT 
 
   return (
     <SQLiteProvider databaseName="hanzi.db" assetSource={{ assetId: require('../assets/db/hanzi.db') }} onInit={migrateDbIfNeeded}>
+      <ThemeProvider>
       <DrawerProvider>
         <View style={styles.container}>
           <Stack screenOptions={{ headerShown: false }}>
@@ -79,6 +81,7 @@ CREATE TABLE IF NOT EXISTS custom_set_chars (set_id INTEGER NOT NULL, word TEXT 
           <SideDrawer />
         </View>
       </DrawerProvider>
+      </ThemeProvider>
     </SQLiteProvider>
   );
 }

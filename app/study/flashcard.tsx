@@ -144,6 +144,18 @@ export default function FlashcardScreen() {
     }, 400);
   };
 
+  
+  useEffect(() => {
+    return () => {
+      if (currentIndex > 0 && currentIndex < cards.length) {
+        const session = { mode: mode || 'flashcard', level, setId: setNum, currentIndex, totalCards: cards.length, results: sessionResults, savedAt: Date.now() };
+        AsyncStorage.setItem('@hanzi_saved_session', JSON.stringify(session));
+      } else if (currentIndex >= cards.length && cards.length > 0) {
+        AsyncStorage.removeItem('@hanzi_saved_session');
+      }
+    };
+  }, [currentIndex, sessionResults, cards.length, mode, level, setNum]);
+
   const handleFlip = () => {
     if (isFlipped) return;
     setIsFlipped(true);

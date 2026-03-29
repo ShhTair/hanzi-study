@@ -1,0 +1,6 @@
+{
+  "好": { "parts": ["女", "子"], "note": "woman + child = good" },
+  "明": { "parts": ["日", "月"], "note": "sun + moon = bright" },
+  "男": { "parts": ["田", "力"], "note": "field + power = man" },
+  "休": { "parts": ["亻", "木"], "note": "person + tree = rest" }
+}

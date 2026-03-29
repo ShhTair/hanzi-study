@@ -10,6 +10,7 @@ import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
+import { useTheme } from '../src/context/ThemeContext';
 
 // We'll define a simple Picker/ActionSheet component using Alert for Android or ActionSheetIOS
 // Since we want to be cross-platform, we can use Alert for picking options
@@ -25,6 +26,8 @@ function showPicker(title: string, options: { label: string, value: any }[], onS
 }
 
 export default function SettingsScreen() {
+  const { colors, theme, setTheme } = useTheme();
+  const styles = createStyles(colors);
   const router = useRouter();
 
   // State for all settings
@@ -168,8 +171,8 @@ export default function SettingsScreen() {
       <Switch 
         value={value} 
         onValueChange={onValueChange} 
-        thumbColor={Colors.textPrimary}
-        trackColor={{ false: Colors.cardElevated, true: Colors.primary }}
+        thumbColor={colors.textPrimary}
+        trackColor={{ false: colors.cardElevated, true: colors.primary }}
       />
     </View>
   );
@@ -179,15 +182,15 @@ export default function SettingsScreen() {
       <Text style={styles.rowLabel}>{label}</Text>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Text style={styles.pickerValue}>{value}</Text>
-        <Ionicons name="chevron-forward" size={16} color={Colors.textMuted} style={{ marginLeft: 8 }} />
+        <Ionicons name="chevron-forward" size={16} color={colors.textMuted} style={{ marginLeft: 8 }} />
       </View>
     </TouchableOpacity>
   );
 
   const ActionRow = ({ label, icon, onPress, borderBottom, isDestructive }: any) => (
     <TouchableOpacity style={[styles.row, borderBottom && styles.rowBorder]} onPress={onPress}>
-      <Text style={[styles.rowLabel, isDestructive && { color: Colors.wrong }]}>{label}</Text>
-      <Ionicons name={icon} size={20} color={isDestructive ? Colors.wrong : Colors.textMuted} />
+      <Text style={[styles.rowLabel, isDestructive && { color: colors.wrong }]}>{label}</Text>
+      <Ionicons name={icon} size={20} color={isDestructive ? colors.wrong : colors.textMuted} />
     </TouchableOpacity>
   );
 
@@ -234,6 +237,12 @@ export default function SettingsScreen() {
 
       <SectionHeader title="DISPLAY" />
       <View style={styles.card}>
+        <PickerRow
+          label="Theme"
+          value={theme === 'light' ? 'Light' : 'Dark'}
+          borderBottom
+          onPress={() => showPicker('Theme', [{label:'Dark',value:'dark'}, {label:'Light',value:'light'}], (v) => setTheme(v))}
+        />
         <PickerRow
           label="Character script"
           value={displayScript === 'simplified' ? 'Simplified' : 'Traditional'}
@@ -282,7 +291,7 @@ export default function SettingsScreen() {
         </View>
         <TouchableOpacity style={styles.row} onPress={() => Linking.openURL('https://github.com/ShhTair/hanzi-study')}>
           <Text style={styles.rowLabel}>GitHub</Text>
-          <Ionicons name="open-outline" size={20} color={Colors.textMuted} />
+          <Ionicons name="open-outline" size={20} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
       <View style={{height: 40}} />
@@ -290,12 +299,12 @@ export default function SettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  sectionHeader: { color: Colors.textMuted, fontSize: 13, fontWeight: 'bold', textTransform: 'uppercase', marginLeft: 28, marginTop: 24, marginBottom: 8, letterSpacing: 1 },
-  card: { backgroundColor: Colors.card, borderRadius: 12, marginHorizontal: 12, marginBottom: 8, overflow: 'hidden' },
+const createStyles = (colors: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
+  sectionHeader: { color: colors.textMuted, fontSize: 13, fontWeight: 'bold', textTransform: 'uppercase', marginLeft: 28, marginTop: 24, marginBottom: 8, letterSpacing: 1 },
+  card: { backgroundColor: colors.card, borderRadius: 12, marginHorizontal: 12, marginBottom: 8, overflow: 'hidden' },
   row: { height: 52, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, justifyContent: 'space-between' },
-  rowBorder: { borderBottomWidth: 1, borderBottomColor: Colors.divider },
-  rowLabel: { color: Colors.textPrimary, fontSize: 16 },
-  pickerValue: { color: Colors.textMuted, fontSize: 16 },
+  rowBorder: { borderBottomWidth: 1, borderBottomColor: colors.divider },
+  rowLabel: { color: colors.textPrimary, fontSize: 16 },
+  pickerValue: { color: colors.textMuted, fontSize: 16 },
 });

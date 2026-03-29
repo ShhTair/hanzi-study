@@ -8,11 +8,14 @@ import { Colors } from '../../src/constants/colors';
 import { PinyinText } from '../../src/components/PinyinText';
 import { AddToSetModal } from '../../src/components/AddToSetModal';
 import { toggleFavorite } from '../../src/db/database';
+import { useTheme } from '../../src/context/ThemeContext';
 
 const { width } = Dimensions.get('window');
 const GRID_CELL_SIZE = (width - 32 - 24) / 4; // 4 columns, 16 padding sides, 3 gaps of 8
 
 export default function SearchTab() {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
   const { searchCharacters } = useDatabase();
   const router = useRouter();
 
@@ -166,7 +169,7 @@ export default function SearchTab() {
       />
 
       <View style={styles.searchBox}>
-        <Ionicons name="search" size={20} color={Colors.textMuted} style={styles.searchIcon} />
+        <Ionicons name="search" size={20} color={colors.textMuted} style={styles.searchIcon} />
         <TextInput
           style={styles.input}
           placeholder="Search pinyin, meaning, or hanzi..."
@@ -175,12 +178,12 @@ export default function SearchTab() {
           onSubmitEditing={handleSubmit}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholderTextColor={Colors.textMuted}
+          placeholderTextColor={colors.textMuted}
           returnKeyType="search"
         />
         {query.length > 0 && (
           <TouchableOpacity onPress={() => executeSearch('')} style={styles.clearIcon}>
-            <Ionicons name="close-circle" size={20} color={Colors.textMuted} />
+            <Ionicons name="close-circle" size={20} color={colors.textMuted} />
           </TouchableOpacity>
         )}
       </View>
@@ -197,10 +200,10 @@ export default function SearchTab() {
           ) : null}
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.historyRow} onPress={() => handleHistoryTap(item)}>
-              <Ionicons name="time-outline" size={20} color={Colors.textMuted} />
+              <Ionicons name="time-outline" size={20} color={colors.textMuted} />
               <Text style={styles.historyText}>{item}</Text>
               <TouchableOpacity onPress={() => removeHistoryItem(item)} style={{ padding: 8 }}>
-                <Ionicons name="close" size={20} color={Colors.textMuted} />
+                <Ionicons name="close" size={20} color={colors.textMuted} />
               </TouchableOpacity>
             </TouchableOpacity>
           )}
@@ -232,69 +235,69 @@ export default function SearchTab() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+const createStyles = (colors: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: colors.background },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.card,
+    backgroundColor: colors.card,
     borderRadius: 8,
     margin: 16,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: colors.border,
   },
   searchIcon: { marginRight: 8 },
   clearIcon: { padding: 8 },
   input: {
     flex: 1,
     height: 48,
-    color: Colors.textPrimary,
+    color: colors.textPrimary,
     fontSize: 16,
   },
-  historyTitle: { color: Colors.textMuted, fontSize: 13, fontWeight: 'bold', textTransform: 'uppercase', marginLeft: 16, marginTop: 16, marginBottom: 8, letterSpacing: 1 },
-  historyRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: Colors.divider },
-  historyText: { flex: 1, color: Colors.textPrimary, fontSize: 16, marginLeft: 16 },
+  historyTitle: { color: colors.textMuted, fontSize: 13, fontWeight: 'bold', textTransform: 'uppercase', marginLeft: 16, marginTop: 16, marginBottom: 8, letterSpacing: 1 },
+  historyRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: colors.divider },
+  historyText: { flex: 1, color: colors.textPrimary, fontSize: 16, marginLeft: 16 },
   clearHistoryBtn: { alignItems: 'center', paddingVertical: 24 },
-  clearHistoryText: { color: Colors.primary, fontWeight: 'bold', fontSize: 14 },
+  clearHistoryText: { color: colors.primary, fontWeight: 'bold', fontSize: 14 },
   listContent: { paddingHorizontal: 16, paddingBottom: 16 },
   listCard: {
-    backgroundColor: Colors.card,
+    backgroundColor: colors.card,
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: colors.border,
   },
-  listHanzi: { fontSize: 24, fontWeight: 'bold', color: Colors.textPrimary },
-  listMeanings: { fontSize: 14, color: Colors.textSecondary, marginTop: 4 },
+  listHanzi: { fontSize: 24, fontWeight: 'bold', color: colors.textPrimary },
+  listMeanings: { fontSize: 14, color: colors.textSecondary, marginTop: 4 },
   gridContent: { paddingHorizontal: 16, paddingBottom: 16 },
   gridRow: { justifyContent: 'flex-start' },
   gridCell: {
     width: GRID_CELL_SIZE,
     aspectRatio: 1,
-    backgroundColor: Colors.card,
+    backgroundColor: colors.card,
     borderRadius: 8,
     marginRight: 8,
     marginBottom: 8,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: colors.border,
   },
-  gridChar: { fontSize: 28, fontWeight: '700', color: Colors.textPrimary },
+  gridChar: { fontSize: 28, fontWeight: '700', color: colors.textPrimary },
   gridBadge: {
     position: 'absolute',
     bottom: -6,
-    backgroundColor: Colors.primary,
+    backgroundColor: colors.primary,
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 8,
   },
   gridBadgeText: { color: '#FFF', fontSize: 10, fontWeight: 'bold' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
-  actionSheet: { backgroundColor: Colors.card, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 32 },
-  actionTitle: { fontSize: 24, fontWeight: 'bold', color: Colors.textPrimary, padding: 20, textAlign: 'center', borderBottomWidth: 1, borderBottomColor: Colors.divider },
-  actionRow: { padding: 20, borderBottomWidth: 1, borderBottomColor: Colors.divider, alignItems: 'center' },
-  actionText: { fontSize: 18, color: Colors.primary, fontWeight: '600' },
+  actionSheet: { backgroundColor: colors.card, borderTopLeftRadius: 16, borderTopRightRadius: 16, paddingBottom: 32 },
+  actionTitle: { fontSize: 24, fontWeight: 'bold', color: colors.textPrimary, padding: 20, textAlign: 'center', borderBottomWidth: 1, borderBottomColor: colors.divider },
+  actionRow: { padding: 20, borderBottomWidth: 1, borderBottomColor: colors.divider, alignItems: 'center' },
+  actionText: { fontSize: 18, color: colors.primary, fontWeight: '600' },
 });
