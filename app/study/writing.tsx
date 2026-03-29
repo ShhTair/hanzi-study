@@ -176,7 +176,8 @@ export default function WritingScreen() {
       const distance = calculateDTW(normUser, normExpected);
       
       // Threshold for self check
-      const match = distance < 0.35;
+      const STROKE_THRESHOLD = 0.38;
+      const match = distance < STROKE_THRESHOLD;
       if (match) correct++;
       return { match, distance };
     });

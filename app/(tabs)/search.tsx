@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal, Keyboard } from 'react-native';
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, Dimensions, Modal, Keyboard , KeyboardAvoidingView, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, Stack } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -225,7 +225,7 @@ export default function SearchTab() {
   );
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <Stack.Screen 
         options={{ 
           title: 'Search',
@@ -300,7 +300,7 @@ export default function SearchTab() {
       )}
 
       {renderActionSheet()}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

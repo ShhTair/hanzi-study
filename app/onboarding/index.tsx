@@ -61,15 +61,19 @@ export default function OnboardingShell() {
   const translateX = useSharedValue(0);
 
   const finishOnboarding = async () => {
-    await AsyncStorage.setItem('@hanzi_onboarding_complete', 'true');
-    await AsyncStorage.setItem('@hanzi_user_level', level);
-    await AsyncStorage.setItem('@hanzi_sequence', sequence);
-    await AsyncStorage.setItem('@hanzi_theme', theme);
-    
-    setIsRaining(true);
-    setTimeout(() => {
-      router.replace('/(tabs)');
-    }, 1500);
+    try {
+      await AsyncStorage.setItem('@hanzi_onboarding_complete', 'true');
+      await AsyncStorage.setItem('@hanzi_user_level', level);
+      await AsyncStorage.setItem('@hanzi_sequence', sequence);
+      await AsyncStorage.setItem('@hanzi_theme', theme);
+      setIsRaining(true);
+    } catch (e) {
+      console.warn(e);
+    } finally {
+      setTimeout(() => {
+        router.replace('/(tabs)' as any);
+      }, 1500);
+    }
   };
 
   const handleNext = () => {

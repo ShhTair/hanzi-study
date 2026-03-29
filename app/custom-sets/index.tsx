@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert , KeyboardAvoidingView, Platform } from 'react-native';
 import { Stack, useRouter } from 'expo-router';
 import * as SQLite from 'expo-sqlite';
 import { Ionicons } from '@expo/vector-icons';
@@ -78,7 +78,7 @@ export default function CustomSetsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <Stack.Screen 
         options={{ 
           title: 'Custom Sets',
@@ -135,7 +135,7 @@ export default function CustomSetsScreen() {
           setName={sets.find(s => s.id === selectedSetId)?.name || 'Custom Set'}
         />
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

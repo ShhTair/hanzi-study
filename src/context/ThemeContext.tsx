@@ -44,7 +44,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         setThemeState(val as ThemeType);
         setColors(val === 'light' ? LightColors : DarkColors);
       }
-    });
+    }).catch(() => {});
   }, []);
 
   const setTheme = async (t: ThemeType) => {

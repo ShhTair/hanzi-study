@@ -365,7 +365,7 @@ export default function CharacterDetail() {
                 <Text style={styles.meaningText}>{((decompData as any)[char as string]).note}</Text>
                 <View style={{ flexDirection: 'row', gap: 16, marginTop: 16, justifyContent: 'center' }}>
                   {((decompData as any)[char as string]).parts.map((part: string, i: number) => (
-                    <TouchableOpacity key={i} onPress={() => router.push('/character/' + part)} style={styles.chip}>
+                    <TouchableOpacity key={i} onPress={() => router.push('/character/' + part as any)} style={styles.chip}>
                       <Text style={styles.chipText}>{part}</Text>
                     </TouchableOpacity>
                   ))}

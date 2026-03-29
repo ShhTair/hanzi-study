@@ -178,7 +178,7 @@ export default function SettingsScreen() {
             const db = await SQLite.openDatabaseAsync('hanzi.db');
             await db.runAsync('DELETE FROM user_progress');
             await db.runAsync('DELETE FROM favorites');
-            router.replace('/(tabs)/');
+            router.replace('/(tabs)' as any);
           }
         }
       ]
