@@ -34,10 +34,13 @@ export function AddToSetModal({ char, visible, onClose }: Props) {
     }
   };
 
-  const handleAdd = async (setId: number) => {
+    const handleAdd = async (setId: number) => {
     try {
       const db = await SQLite.openDatabaseAsync('hanzi.db');
-      await addCharToSet(db, setId, char);
+      const chars = char.split(',');
+      for (const c of chars) {
+        if (c.trim()) await addCharToSet(db, setId, c.trim());
+      }
       onClose();
     } catch (e) {
       console.error(e);

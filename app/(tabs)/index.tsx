@@ -17,6 +17,7 @@ export default function HomeTab() {
   const [streak, setStreak] = useState(0);
   const [displayScript, setDisplayScript] = useState<'simplified'|'traditional'>('simplified');
   const [dueToday, setDueToday] = useState(0);
+  const [totalStudyTimeStr, setTotalStudyTimeStr] = useState('0m');
   const [hskProgress, setHskProgress] = useState<{ level: number, reviewed: number, total: number }[]>([]);
   const [savedSession, setSavedSession] = useState<any>(null);
   const [heatmap, setHeatmap] = useState<{study_date: string, review_count: number}[]>([]);
@@ -43,6 +44,14 @@ export default function HomeTab() {
             return [];
           }
         };
+
+        
+        const timeResult = await tryQuery<{ sum: number }>("SELECT SUM(studied_seconds) as sum FROM user_progress");
+        if (isMounted && timeResult && timeResult.sum) {
+          const hours = Math.floor(timeResult.sum / 3600);
+          const minutes = Math.floor((timeResult.sum % 3600) / 60);
+          setTotalStudyTimeStr(hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`);
+        }
 
         // Query 1: Cards reviewed today
         const reviewedResult = await tryQuery<{ count: number }>("SELECT count(*) as count FROM user_progress WHERE DATE(last_reviewed) = date('now')");

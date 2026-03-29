@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions } from '
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import Svg, { Circle } from 'react-native-svg';
 import { Colors } from '../../src/constants/colors';
+import { checkDailyGoal } from '../../src/notifications';
 import { PinyinText } from '../../src/components/PinyinText';
 import { updateStreak } from '../../src/hooks/useStreak';
 import { Ionicons } from '@expo/vector-icons';

@@ -23,6 +23,7 @@ type Graphics = {
 
 export default function FlashcardScreen() {
   const router = useRouter();
+  const lastCardTime = useRef(Date.now());
   const { mode, level, set } = useLocalSearchParams<{ mode?: string; level?: string; set?: string }>();
   const levelNum = Number(level) || 1;
   const setNum = Number(set) || 0;
@@ -182,6 +183,11 @@ export default function FlashcardScreen() {
   const handleRate = async (rating: number) => {
     const card = cards[currentIndex];
     await updateSRS(card.word, rating);
+    const timeSpentSeconds = Math.round((Date.now() - lastCardTime.current) / 1000);
+    lastCardTime.current = Date.now();
+    const cappedTime = Math.min(timeSpentSeconds, 60);
+    const db = await SQLite.openDatabaseAsync('hanzi.db');
+    await db.runAsync('UPDATE user_progress SET studied_seconds = studied_seconds + ? WHERE word_id = ?', [cappedTime, card.word]);
     
     const newResults = [...sessionResults, {
       word: card.word,

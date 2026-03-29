@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter, Stack } from 'expo-router';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useDatabase } from '../../src/hooks/useDatabase';
+import * as SQLite from 'expo-sqlite';
 import { Colors } from '../../src/constants/colors';
 import { PinyinText } from '../../src/components/PinyinText';
 import { AddToSetModal } from '../../src/components/AddToSetModal';
@@ -64,10 +65,78 @@ export default function SearchTab() {
     await AsyncStorage.setItem('@hanzi_search_history', JSON.stringify(updated));
   };
 
+    const parseSearchQuery = (raw: string) => {
+    let q = raw;
+    let hskLevel: number | undefined;
+    let strokeCount: number | undefined;
+    let favoritesOnly = false;
+
+    const hskMatch = q.match(/--hsk([1-9])/i);
+    if (hskMatch) {
+      hskLevel = parseInt(hskMatch[1]);
+      q = q.replace(hskMatch[0], '').trim();
+    }
+
+    const strokeMatch = q.match(/--s(\d+)/i);
+    if (strokeMatch) {
+      strokeCount = parseInt(strokeMatch[1]);
+      q = q.replace(strokeMatch[0], '').trim();
+    }
+
+    if (q.includes('--fav')) {
+      favoritesOnly = true;
+      q = q.replace('--fav', '').trim();
+    }
+
+    return { q, hskLevel, strokeCount, favoritesOnly };
+  };
+
   const executeSearch = async (text: string) => {
     setQuery(text);
-    if (text.trim().length > 0) {
-      const rows = await searchCharacters(text);
+    const { q, hskLevel, strokeCount, favoritesOnly } = parseSearchQuery(text);
+    if (q.trim().length > 0 || hskLevel || strokeCount || favoritesOnly) {
+      // Inline the query since we need complex joins now
+      const db = await SQLite.openDatabaseAsync('hanzi.db');
+      
+      let sql = 'SELECT d.rowid, d.simplified, d.traditional, d.pinyin, d.meanings, h.level FROM dictionary d LEFT JOIN hsk h ON h.word = d.simplified';
+      const params: any[] = [];
+      let whereAdded = false;
+
+      const addWhere = () => {
+        if (!whereAdded) { sql += ' WHERE '; whereAdded = true; }
+        else sql += ' AND ';
+      };
+
+      if (strokeCount) {
+        sql = sql.replace('FROM dictionary d', 'FROM dictionary d LEFT JOIN graphics g ON g.character = d.simplified');
+      }
+
+      if (q.trim().length > 0) {
+        addWhere();
+        sql += '(d.simplified LIKE ? OR d.pinyin LIKE ? OR d.meanings LIKE ?)';
+        params.push(`%${q}%`, `%${q}%`, `%${q}%`);
+      }
+
+      if (hskLevel) {
+        addWhere();
+        sql += 'h.level = ?';
+        params.push(hskLevel);
+      }
+
+      if (strokeCount) {
+        addWhere();
+        sql += 'json_array_length(g.strokes) = ?';
+        params.push(strokeCount);
+      }
+
+      if (favoritesOnly) {
+        addWhere();
+        sql += 'EXISTS (SELECT 1 FROM favorites f WHERE f.word = d.simplified)';
+      }
+
+      sql += ' LIMIT 100';
+
+      const rows = await db.getAllAsync(sql, params);
       setResults(rows);
     } else {
       setResults([]);

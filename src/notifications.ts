@@ -1,48 +1,43 @@
 import * as Notifications from 'expo-notifications';
-import * as Device from 'expo-device';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true
-  }),
-});
-
-export async function requestNotificationPermission(): Promise<boolean> {
-  if (!Device.isDevice) return false;
-  const { status } = await Notifications.requestPermissionsAsync();
-  return status === 'granted';
+export async function requestNotificationPermission() {
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+  return finalStatus === 'granted';
 }
 
-export async function scheduleDailyReminder(hour = 9, minute = 0) {
+export async function scheduleDailyReminder(hour: number) {
   await Notifications.cancelAllScheduledNotificationsAsync();
   await Notifications.scheduleNotificationAsync({
     content: {
-      title: '汉字学习 · Hanzi Study',
-      body: 'Your characters are waiting! 加油！',
-      sound: true,
+      title: 'Time to study!',
+      body: 'Keep up your daily Hanzi habit.',
     },
-    trigger: { 
+    trigger: {
       type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour, 
-      minute 
+      hour,
+      minute: 0
     },
   });
 }
 
-export async function scheduleStreakWarning() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: '🔥 Streak at risk!',
-      body: "You haven't studied today. Don't break your streak!",
-    },
-    trigger: { 
-      type: Notifications.SchedulableTriggerInputTypes.DAILY,
-      hour: 20, 
-      minute: 0 
-    },
-  });
+export async function checkDailyGoal(reviewedCount: number, target: number) {
+  const today = new Date().toISOString().split('T')[0];
+  const { default: AsyncStorage } = await import('@react-native-async-storage/async-storage');
+  
+  const notified = await AsyncStorage.getItem('@hanzi_goal_notified_' + today);
+  if (reviewedCount >= target && !notified) {
+    await AsyncStorage.setItem('@hanzi_goal_notified_' + today, 'true');
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: '🎉 Daily goal reached!',
+        body: `You studied ${reviewedCount} characters today. Great job! 加油！`,
+      },
+      trigger: null,
+    });
+  }
 }

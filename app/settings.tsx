@@ -106,6 +106,30 @@ export default function SettingsScreen() {
     await AsyncStorage.setItem(key, String(value));
   };
 
+  
+  const resetLevelProgress = async (level: number) => {
+    Alert.alert(
+      'Reset Level',
+      `Are you sure you want to reset all progress for HSK ${level}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { 
+          text: 'Reset', 
+          style: 'destructive',
+          onPress: async () => {
+            const db = await SQLite.openDatabaseAsync('hanzi.db');
+            const chars = await db.getAllAsync<{word: string}>('SELECT word FROM hsk WHERE level = ?', [level]);
+            const words = chars.map(c => `'${c.word}'`).join(',');
+            if (words) {
+              await db.execAsync(`DELETE FROM user_progress WHERE word_id IN (${words})`);
+              Alert.alert('Done', `HSK ${level} progress has been reset.`);
+            }
+          }
+        }
+      ]
+    );
+  };
+
   const handleExport = async () => {
     try {
       const db = await SQLite.openDatabaseAsync('hanzi.db');
@@ -276,6 +300,7 @@ export default function SettingsScreen() {
       <View style={styles.card}>
         <ActionRow label="Export progress" icon="share-outline" onPress={handleExport} borderBottom />
         <ActionRow label="Import / Restore backup" icon="folder-open-outline" onPress={handleImport} borderBottom />
+        <ActionRow label="Reset progress for a level..." icon="refresh-outline" onPress={() => showPicker('Reset Level', [1,2,3,4,5,6,7,8,9].map(l => ({label: `HSK ${l}`, value: l})), resetLevelProgress)} borderBottom />
         <ActionRow label="Reset all progress" icon="trash-outline" onPress={handleReset} isDestructive />
       </View>
 

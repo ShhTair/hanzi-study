@@ -16,6 +16,7 @@ type Word = {
 
 export default function QuizScreen() {
   const router = useRouter();
+  const lastCardTime = useRef(Date.now());
   const { level, set } = useLocalSearchParams<{ level?: string; set?: string }>();
   const levelNum = Number(level) || 1;
   const setNum = Number(set) || 0;

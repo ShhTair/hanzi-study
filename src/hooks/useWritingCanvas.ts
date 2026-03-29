@@ -6,7 +6,7 @@ function euclideanDistance(p1: number[], p2: number[]) {
   return Math.sqrt(Math.pow(p1[0] - p2[0], 2) + Math.pow(p1[1] - p2[1], 2));
 }
 
-function calculateDTW(path1: number[][], path2: number[][]) {
+export function calculateDTW(path1: number[][], path2: number[][]) {
   const n = path1.length;
   const m = path2.length;
   if (n === 0 || m === 0) return Infinity;
@@ -28,7 +28,7 @@ function calculateDTW(path1: number[][], path2: number[][]) {
   return dtw[n][m] / Math.max(n, m);
 }
 
-function normalizePath(points: number[][], size: number = 900) {
+export function normalizePath(points: number[][], size: number = 900) {
   if (points.length === 0) return [];
   
   // Find bounding box
@@ -55,7 +55,7 @@ function normalizePath(points: number[][], size: number = 900) {
   ]);
 }
 
-export function useWritingCanvas(medians: number[][][], canvasSize: number) {
+export function useWritingCanvas(medians: number[][][], canvasSize: number, mode: 'auto' | 'self_check' = 'auto') {
   const [paths, setPaths] = useState<string[][]>([]);
   const [currentPath, setCurrentPath] = useState<string[]>([]);
   const [rawPoints, setRawPoints] = useState<number[][]>([]);

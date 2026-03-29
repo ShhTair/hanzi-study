@@ -18,20 +18,21 @@ import { PinyinText } from '../../src/components/PinyinText';
 import decompData from '../../src/data/decompositions.json';
 import { AddToSetModal } from '../../src/components/AddToSetModal';
 import { useAudio } from '../../src/hooks/useAudio';
+import { useAnimationSpeed } from '../../src/hooks/useAnimationSpeed';
 import { Colors } from '../../src/constants/colors';
 import * as Clipboard from 'expo-clipboard';
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const MAX_PATH_LENGTH = 3500;
 
-function Stroke({ d, index, playTrigger }: { d: string; index: number; playTrigger: number }) {
+function Stroke({ d, index, playTrigger, multiplier }: { d: string; index: number; playTrigger: number; multiplier: number }) {
   const progress = useSharedValue(0);
 
   useEffect(() => {
     progress.value = 0;
     progress.value = withDelay(
-      index * 600,
-      withTiming(1, { duration: 600, easing: Easing.out(Easing.quad) })
+      index * (600 / multiplier),
+      withTiming(1, { duration: (600 / multiplier), easing: Easing.out(Easing.quad) })
     );
   }, [playTrigger, index, d]);
 
@@ -104,6 +105,7 @@ function TappableSentence({ text, highlight, router }: { text: string; highlight
 }
 
 export default function CharacterDetail() {
+  const { multiplier } = useAnimationSpeed();
   const router = useRouter();
   const { char } = useLocalSearchParams();
   const { db, getCharacterDetail } = useDatabase();
@@ -288,7 +290,7 @@ export default function CharacterDetail() {
             ))}
             {/* Draw animated foreground paths */}
             {strokeData.strokes.map((d: string, i: number) => (
-              <Stroke key={`fg-${i}-${char}`} d={d} index={i} playTrigger={playTrigger} />
+              <Stroke key={`fg-${i}-${char}`} d={d} index={i} playTrigger={playTrigger} multiplier={multiplier} />
             ))}
           </Svg>
         ) : (

@@ -7,7 +7,8 @@ import Svg, { Path, Line, Circle, Polyline } from 'react-native-svg';
 import { Colors } from '../../src/constants/colors';
 import { updateSRS } from '../../src/db/database';
 import { PinyinText } from '../../src/components/PinyinText';
-import { useWritingCanvas } from '../../src/hooks/useWritingCanvas';
+import { useWritingCanvas, normalizePath, calculateDTW } from '../../src/hooks/useWritingCanvas';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 const CANVAS_SIZE = width * 0.85;
@@ -21,7 +22,8 @@ type Word = {
 
 export default function WritingScreen() {
   const router = useRouter();
-  const { level, set } = useLocalSearchParams<{ level?: string; set?: string }>();
+  const lastCardTime = useRef(Date.now());
+  const { level, set, mode: urlMode } = useLocalSearchParams<{ level?: string; set?: string; mode?: string }>();
   const levelNum = Number(level) || 1;
   const setNum = Number(set) || 0;
 
@@ -36,6 +38,8 @@ export default function WritingScreen() {
   const [hintsUsed, setHintsUsed] = useState(0);
   
   const [showHint, setShowHint] = useState(false);
+  const [writingMode, setWritingMode] = useState<'auto' | 'self_check'>('auto');
+  const [evalResults, setEvalResults] = useState<{match: boolean, distance?: number}[] | null>(null);
   const [sessionResults, setSessionResults] = useState<any[]>([]);
 
   // Use the custom hook
@@ -47,7 +51,7 @@ export default function WritingScreen() {
     wrongAttempts,
     strokeFeedback,
     resetCanvas
-  } = useWritingCanvas(medians, CANVAS_SIZE);
+  } = useWritingCanvas(medians, CANVAS_SIZE, writingMode);
 
   // Sync wrong attempts to component state
   useEffect(() => {
@@ -58,6 +62,8 @@ export default function WritingScreen() {
 
   useEffect(() => {
     const init = async () => {
+      const savedMode = await AsyncStorage.getItem('@hanzi_writing_mode');
+      if (savedMode === 'self_check') setWritingMode('self_check');
       try {
         const db = await SQLite.openDatabaseAsync('hanzi.db');
         const qs = await db.getAllAsync<Word>(
