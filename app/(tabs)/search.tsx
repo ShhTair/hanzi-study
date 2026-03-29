@@ -6,6 +6,7 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useDatabase } from '../../src/hooks/useDatabase';
 import { Colors } from '../../src/constants/colors';
 import { PinyinText } from '../../src/components/PinyinText';
+import { AddToSetModal } from '../../src/components/AddToSetModal';
 import { toggleFavorite } from '../../src/db/database';
 
 const { width } = Dimensions.get('window');
@@ -23,6 +24,7 @@ export default function SearchTab() {
   
   const [actionSheetVisible, setActionSheetVisible] = useState(false);
   const [selectedChar, setSelectedChar] = useState<any>(null);
+  const [addToSetVisible, setAddToSetVisible] = useState(false);
 
   useEffect(() => {
     AsyncStorage.getItem('@hanzi_search_history').then(raw => {
@@ -96,6 +98,12 @@ export default function SearchTab() {
             router.push(`/character/${encodeURIComponent(selectedChar?.simplified)}` as any);
           }}>
             <Text style={styles.actionText}>View character</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionRow} onPress={() => {
+            setActionSheetVisible(false);
+            setAddToSetVisible(true);
+          }}>
+            <Text style={styles.actionText}>Add to custom set...</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionRow} onPress={async () => {
             setActionSheetVisible(false);

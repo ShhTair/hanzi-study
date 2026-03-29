@@ -13,8 +13,9 @@ import Animated, {
   Easing,
   cancelAnimation,
 } from 'react-native-reanimated';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { PinyinText } from '../../src/components/PinyinText';
+import { AddToSetModal } from '../../src/components/AddToSetModal';
 import { useAudio } from '../../src/hooks/useAudio';
 import { Colors } from '../../src/constants/colors';
 import * as Clipboard from 'expo-clipboard';
@@ -117,6 +118,7 @@ export default function CharacterDetail() {
   const [strokeCount, setStrokeCount] = useState<number | null>(null);
   const [easeFactor, setEaseFactor] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
+  const [addToSetVisible, setAddToSetVisible] = useState(false);
 
   useEffect(() => {
     async function initFavoriteSchema() {
@@ -251,6 +253,9 @@ export default function CharacterDetail() {
           headerTintColor: Colors.textPrimary,
           headerRight: () => (
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={() => setAddToSetVisible(true)} style={{ marginRight: 15 }}>
+                <MaterialIcons name='playlist-add' size={28} color={Colors.textPrimary} />
+              </TouchableOpacity>
               <TouchableOpacity onPress={handleCopy} style={{ marginRight: 15 }}>
                 <Ionicons name='copy-outline' size={24} color={Colors.textPrimary} />
               </TouchableOpacity>
@@ -262,6 +267,7 @@ export default function CharacterDetail() {
         }} 
       />
       {copied && <Text style={styles.copiedToast}>Copied!</Text>}
+      <AddToSetModal visible={addToSetVisible} onClose={() => setAddToSetVisible(false)} char={char as string} />
       
       {/* SVG Canvas Box */}
       <View style={styles.svgContainer}>

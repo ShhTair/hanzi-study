@@ -68,6 +68,11 @@ export default function FlashcardScreen() {
             ORDER BY up.next_review ASC
             LIMIT 50
           `);
+        } else if (level === 'custom') {
+          chars = await db.getAllAsync<Word>(
+            'SELECT h.word, h.pinyin, h.meaning, h.level FROM custom_set_chars c JOIN hsk h ON c.word = h.word WHERE c.set_id = ? ORDER BY c.position',
+            [setNum]
+          );
         } else {
           chars = await db.getAllAsync<Word>(
             'SELECT word, pinyin, meaning, level FROM hsk WHERE level = ? LIMIT 10 OFFSET ?',

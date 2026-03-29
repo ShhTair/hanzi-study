@@ -21,7 +21,7 @@ type Word = {
 
 export default function WritingScreen() {
   const router = useRouter();
-  const { level, set } = useLocalSearchParams();
+  const { level, set } = useLocalSearchParams<{ level?: string; set?: string }>();
   const levelNum = Number(level) || 1;
   const setNum = Number(set) || 0;
 

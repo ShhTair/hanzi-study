@@ -162,3 +162,46 @@ export async function getAllFavorites() {
   const db = await initDB();
   return await db.getAllAsync('SELECT word, added_at FROM favorites ORDER BY added_at DESC');
 }
+
+
+export interface CustomSet {
+  id: number;
+  name: string;
+  created_at: number;
+  last_studied: number | null;
+}
+
+export async function createCustomSet(db: SQLite.SQLiteDatabase, name: string): Promise<number> {
+  const result = await db.runAsync('INSERT INTO custom_sets (name, created_at) VALUES (?, ?)', [name, Date.now()]);
+  return result.lastInsertRowId;
+}
+
+export async function deleteCustomSet(db: SQLite.SQLiteDatabase, setId: number): Promise<void> {
+  await db.runAsync('DELETE FROM custom_sets WHERE id = ?', [setId]);
+}
+
+export async function renameCustomSet(db: SQLite.SQLiteDatabase, setId: number, name: string): Promise<void> {
+  await db.runAsync('UPDATE custom_sets SET name = ? WHERE id = ?', [name, setId]);
+}
+
+export async function addCharToSet(db: SQLite.SQLiteDatabase, setId: number, word: string): Promise<void> {
+  await db.runAsync('INSERT OR IGNORE INTO custom_set_chars (set_id, word) VALUES (?, ?)', [setId, word]);
+}
+
+export async function removeCharFromSet(db: SQLite.SQLiteDatabase, setId: number, word: string): Promise<void> {
+  await db.runAsync('DELETE FROM custom_set_chars WHERE set_id = ? AND word = ?', [setId, word]);
+}
+
+export async function getCustomSets(db: SQLite.SQLiteDatabase): Promise<CustomSet[]> {
+  return db.getAllAsync<CustomSet>('SELECT * FROM custom_sets ORDER BY created_at DESC');
+}
+
+export async function getCustomSetChars(db: SQLite.SQLiteDatabase, setId: number): Promise<string[]> {
+  const rows = await db.getAllAsync<{word: string}>('SELECT word FROM custom_set_chars WHERE set_id = ? ORDER BY position', [setId]);
+  return rows.map(r => r.word);
+}
+
+export async function isInCustomSet(db: SQLite.SQLiteDatabase, setId: number, word: string): Promise<boolean> {
+  const row = await db.getFirstAsync<{set_id: number}>('SELECT set_id FROM custom_set_chars WHERE set_id = ? AND word = ?', [setId, word]);
+  return !!row;
+}
