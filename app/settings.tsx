@@ -5,8 +5,8 @@ import * as SQLite from 'expo-sqlite';
 import * as DocumentPicker from 'expo-document-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../src/constants/colors';
-import { requestNotificationPermission, scheduleDailyReminder } from '../src/notifications';
-import * as Notifications from 'expo-notifications';
+// Notifications imported lazily to prevent Expo Go crash
+
 import Constants from 'expo-constants';
 import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
@@ -80,23 +80,29 @@ export default function SettingsScreen() {
   
   const handleToggleNotifications = async (val: boolean) => {
     setNotificationsEnabled(val);
-    await AsyncStorage.setItem('@hanzi_notifications_enabled', String(val));
+    await AsyncStorage.setItem("@hanzi_notifications_enabled", String(val));
     if (val) {
+      const { requestNotificationPermission, scheduleDailyReminder } =
+        await import("../src/notifications");
+      const Notifications = await import("expo-notifications");
       const granted = await requestNotificationPermission();
-      if (granted) scheduleDailyReminder(notificationHour);
-      else {
+      if (granted) {
+        scheduleDailyReminder(notificationHour);
+      } else {
         setNotificationsEnabled(false);
-        await AsyncStorage.setItem('@hanzi_notifications_enabled', 'false');
+        await AsyncStorage.setItem("@hanzi_notifications_enabled", "false");
       }
     } else {
+      const Notifications = await import("expo-notifications");
       await Notifications.cancelAllScheduledNotificationsAsync();
     }
   };
 
   const handleChangeNotificationHour = async (hour: number) => {
     setNotificationHour(hour);
-    await AsyncStorage.setItem('@hanzi_notification_hour', String(hour));
+    await AsyncStorage.setItem("@hanzi_notification_hour", String(hour));
     if (notificationsEnabled) {
+      const { scheduleDailyReminder } = await import("../src/notifications");
       scheduleDailyReminder(hour);
     }
   };

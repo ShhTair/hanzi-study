@@ -61,18 +61,11 @@ export default function QuizScreen() {
   }, [levelNum, setNum]);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setInterval>;
     if (!isPaused && !loading && currentIndex < questions.length) {
-      timer = setInterval(() => setTime(t => t + 1), 1000);
+      timer = setInterval(() => setTime((t) => t + 1), 1000);
     }
-  const pulseStyle = useAnimatedStyle(() => ({
-    borderColor: Colors.primary,
-    borderWidth: 3,
-    opacity: borderPulse.value,
-    ...StyleSheet.absoluteFillObject,
-    pointerEvents: 'none',
-  } as any));
-  return () => clearInterval(timer);
+    return () => clearInterval(timer);
   }, [isPaused, loading, currentIndex, questions.length]);
 
   useEffect(() => {

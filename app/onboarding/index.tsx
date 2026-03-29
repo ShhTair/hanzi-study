@@ -1,6 +1,6 @@
 import { Colors } from '../../src/constants/colors';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
@@ -59,20 +59,28 @@ export default function OnboardingShell() {
   const [isRaining, setIsRaining] = useState(false);
   
   const translateX = useSharedValue(0);
+  const navigationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (navigationTimer.current) clearTimeout(navigationTimer.current);
+    };
+  }, []);
 
   const finishOnboarding = async () => {
     try {
-      await AsyncStorage.setItem('@hanzi_onboarding_complete', 'true');
-      await AsyncStorage.setItem('@hanzi_user_level', level);
-      await AsyncStorage.setItem('@hanzi_sequence', sequence);
-      await AsyncStorage.setItem('@hanzi_theme', theme);
+      await AsyncStorage.setItem("@hanzi_onboarding_complete", "true");
+      await AsyncStorage.setItem("@hanzi_user_level", level);
+      await AsyncStorage.setItem("@hanzi_sequence", sequence);
+      await AsyncStorage.setItem("@hanzi_theme", theme);
       setIsRaining(true);
+      // Navigate after rain animation; use ref to avoid stale closure crash
+      navigationTimer.current = setTimeout(() => {
+        router.replace("/(tabs)" as any);
+      }, 1500);
     } catch (e) {
       console.warn(e);
-    } finally {
-      setTimeout(() => {
-        router.replace('/(tabs)' as any);
-      }, 1500);
+      router.replace("/(tabs)" as any);
     }
   };
 
