@@ -14,6 +14,7 @@ export default function Layout() {
   const segments = useSegments();
   const [isReady, setIsReady] = useState(false);
   const [initialRoute, setInitialRoute] = useState<string | null>(null);
+  const [hasNavigated, setHasNavigated] = useState(false);
 
   const migrateDbIfNeeded = async (db: SQLiteDatabase) => {
     try {
@@ -46,17 +47,15 @@ CREATE TABLE IF NOT EXISTS tone_errors (word TEXT, wrong_tone INTEGER, correct_t
   }, []);
 
   useEffect(() => {
-    if (isReady && initialRoute) {
-      const inTabsGroup = segments[0] === '(tabs)';
-      const inOnboardingGroup = segments[0] === 'onboarding';
-      
-      if (initialRoute === '(tabs)' && !inTabsGroup) {
+    if (isReady && initialRoute && !hasNavigated) {
+      if (initialRoute === '(tabs)') {
         router.replace('/(tabs)');
-      } else if (initialRoute === 'onboarding' && !inOnboardingGroup) {
+      } else {
         router.replace('/onboarding');
       }
+      setHasNavigated(true);
     }
-  }, [isReady, initialRoute, segments]);
+  }, [isReady, initialRoute, hasNavigated]);
 
   if (!isReady) {
     return (
