@@ -5,6 +5,7 @@ import * as SQLite from 'expo-sqlite';
 import { Colors } from '../../src/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { PinyinText } from '../../src/components/PinyinText';
+import { PinyinRubySentence } from '../../src/components/PinyinRuby';
 import { useAudio } from '../../src/hooks/useAudio';
 
 type SentenceData = {
@@ -71,13 +72,13 @@ export default function SentenceInfoScreen() {
 
       <View style={styles.mainCard}>
         <View style={styles.sentenceHeader}>
-          <Text style={styles.sentenceText}>{data.simplified}</Text>
+          <View style={{flex: 1, marginRight: 16}}>
+            <PinyinRubySentence text={data.simplified} pinyinStr={data.pinyin} />
+          </View>
           <TouchableOpacity onPress={() => speakSentence(data.simplified)} style={styles.audioBtn}>
             <Ionicons name="volume-high" size={24} color={Colors.primary} />
           </TouchableOpacity>
         </View>
-
-        <PinyinText pinyin={data.pinyin} size={16} style={styles.pinyinText} />
         
         <Text style={styles.meaningText}>{data.meanings ? data.meanings.split('/').join('; ') : ''}</Text>
       </View>

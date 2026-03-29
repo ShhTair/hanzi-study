@@ -15,6 +15,7 @@ import Step4 from './step4-sequence';
 import Step5 from './step5-theme';
 import Step6 from './step6-howto';
 import Step7 from './step7-done';
+import { startRainAnimation, RainOverlay } from './rainOverlay';
 
 const TOTAL_STEPS = 7;
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -55,6 +56,7 @@ export default function OnboardingShell() {
   const [level, setLevel] = useState('novice');
   const [sequence, setSequence] = useState('hsk');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  const [isRaining, setIsRaining] = useState(false);
   
   const translateX = useSharedValue(0);
 
@@ -63,7 +65,11 @@ export default function OnboardingShell() {
     await AsyncStorage.setItem('@hanzi_user_level', level);
     await AsyncStorage.setItem('@hanzi_sequence', sequence);
     await AsyncStorage.setItem('@hanzi_theme', theme);
-    router.replace('/(tabs)');
+    
+    setIsRaining(true);
+    setTimeout(() => {
+      router.replace('/(tabs)');
+    }, 1500);
   };
 
   const handleNext = () => {
@@ -115,6 +121,7 @@ export default function OnboardingShell() {
           {step === 5 && <Step6 />}
           {step === 6 && <Step7 />}
         </Animated.View>
+        {isRaining && <RainOverlay />}
         <BottomBar 
           step={step} 
           total={TOTAL_STEPS} 

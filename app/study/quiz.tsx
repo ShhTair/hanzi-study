@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
+import Reanimated, { useSharedValue, useAnimatedStyle, withSequence, withTiming, withDelay } from 'react-native-reanimated';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import * as SQLite from 'expo-sqlite';
 import { Ionicons } from '@expo/vector-icons';
@@ -37,6 +38,9 @@ export default function QuizScreen() {
   const [isPaused, setIsPaused] = useState(false);
 
   const comboAnim = useRef(new Animated.Value(0)).current;
+  const borderPulse = useSharedValue(0);
+  const [showPanda, setShowPanda] = useState(false);
+  const [bestCombo, setBestCombo] = useState(0);
 
   useEffect(() => {
     const init = async () => {
@@ -61,7 +65,14 @@ export default function QuizScreen() {
     if (!isPaused && !loading && currentIndex < questions.length) {
       timer = setInterval(() => setTime(t => t + 1), 1000);
     }
-    return () => clearInterval(timer);
+  const pulseStyle = useAnimatedStyle(() => ({
+    borderColor: Colors.primary,
+    borderWidth: 3,
+    opacity: borderPulse.value,
+    ...StyleSheet.absoluteFillObject,
+    pointerEvents: 'none',
+  } as any));
+  return () => clearInterval(timer);
   }, [isPaused, loading, currentIndex, questions.length]);
 
   useEffect(() => {
@@ -89,12 +100,18 @@ export default function QuizScreen() {
     }
   };
 
-  const handleSelect = async (opt: string) => {
+    const handleSelect = async (opt: string) => {
     if (selectedOption !== null) return;
     
     setSelectedOption(opt);
     const correctWord = questions[currentIndex].word;
     const isCorrect = opt === correctWord;
+    
+    const timeSpentSeconds = Math.round((Date.now() - lastCardTime.current) / 1000);
+    lastCardTime.current = Date.now();
+    const cappedTime = Math.min(timeSpentSeconds, 60);
+    const db = await SQLite.openDatabaseAsync('hanzi.db');
+    await db.runAsync('UPDATE user_progress SET studied_seconds = studied_seconds + ? WHERE word_id = ?', [cappedTime, correctWord]);
 
     if (isCorrect) {
       await updateSRS(correctWord, 4);
@@ -102,12 +119,26 @@ export default function QuizScreen() {
       
       const newCombo = combo + 1;
       setCombo(newCombo);
-      if (newCombo >= 3) {
+      if (newCombo > bestCombo) setBestCombo(newCombo);
+      
+      if (newCombo === 3 || newCombo === 5 || newCombo === 10) {
         Animated.sequence([
-          Animated.timing(comboAnim, { toValue: 1, duration: 200, useNativeDriver: true }),
-          Animated.delay(800),
-          Animated.timing(comboAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
+          Animated.timing(comboAnim, { toValue: 1, duration: 100, useNativeDriver: true }),
+          Animated.delay(400),
+          Animated.timing(comboAnim, { toValue: 0, duration: 300, useNativeDriver: true }),
         ]).start();
+      }
+      if (newCombo === 5) {
+        borderPulse.value = withSequence(
+          withTiming(0.8, { duration: 150 }),
+          withTiming(0, { duration: 150 }),
+          withTiming(0.8, { duration: 150 }),
+          withTiming(0, { duration: 150 })
+        );
+      }
+      if (newCombo === 10) {
+        setShowPanda(true);
+        setTimeout(() => setShowPanda(false), 2000);
       }
 
       setTimeout(() => advance(true), 300);
@@ -132,7 +163,7 @@ export default function QuizScreen() {
     if (currentIndex + 1 < questions.length) {
       setCurrentIndex(prev => prev + 1);
     } else {
-      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'quiz', level: levelNum, set: setNum } } as any);
+      router.push({ pathname: '/study/summary', params: { results: JSON.stringify(newResults), mode: 'quiz', level: levelNum, set: setNum, bestCombo: bestCombo } } as any);
     }
   };
 
@@ -158,11 +189,27 @@ export default function QuizScreen() {
     );
   }
 
+  
   const currentQ = questions[currentIndex];
   const progressPercent = ((currentIndex) / questions.length) * 100;
 
+  const pulseStyle = useAnimatedStyle(() => ({
+    borderColor: Colors.primary,
+    borderWidth: 3,
+    opacity: borderPulse.value,
+    ...StyleSheet.absoluteFillObject,
+    pointerEvents: 'none',
+  } as any));
+
   return (
     <View style={styles.container}>
+      <Reanimated.View style={pulseStyle} />
+      {showPanda && (
+        <View style={styles.pandaPopup}>
+          <Text style={{fontSize: 60}}>🐼</Text>
+          <Text style={styles.pandaText}>连击! Liánjī!</Text>
+        </View>
+      )}
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.statBox}>
@@ -223,6 +270,8 @@ export default function QuizScreen() {
 }
 
 const styles = StyleSheet.create({
+  pandaPopup: { position: 'absolute', top: '40%', alignSelf: 'center', alignItems: 'center', backgroundColor: Colors.cardElevated, padding: 20, borderRadius: 20, zIndex: 100, elevation: 10 },
+  pandaText: { color: Colors.primary, fontSize: 20, fontWeight: 'bold', marginTop: 8 },
   container: { flex: 1, backgroundColor: Colors.background },
   center: { justifyContent: 'center', alignItems: 'center' },
   header: {

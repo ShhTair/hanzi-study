@@ -16,6 +16,7 @@ const MODES = [
   { id: 'flashcard', color: Colors.correct, label: 'Flashcard study', subtitle: 'Character rote memorization', route: '/study/flashcard', locked: false },
   { id: 'quiz', color: Colors.primary, label: 'Multiple choice', subtitle: 'Quick knowledge check', route: '/study/quiz', locked: false },
   { id: 'writing', color: Colors.primary, label: 'Writing challenges', subtitle: 'Stroke detection + self-check', route: '/study/writing', locked: false },
+  { id: 'tone', color: '#8B5CF6', label: 'Tone Practice', subtitle: 'Test your tone memory', route: '/study/tone-quiz', locked: false },
   { id: 'guided', color: Colors.textDisabled, label: 'Guided study', subtitle: 'AI guided daily mix', route: '', locked: true },
 ];
 

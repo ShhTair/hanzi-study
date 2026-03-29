@@ -1,5 +1,4 @@
 import { Colors } from '../../src/constants/colors';
-
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
@@ -27,6 +26,7 @@ export default function Step7() {
       <View style={styles.ensoCircle} />
       
       <View style={styles.topSection}>
+        <Text style={{fontSize: 60, marginBottom: 16}}>🐼</Text>
         <Text style={styles.title}>Good luck with your{'\n'}Hanzi learning journey!</Text>
       </View>
 
@@ -87,7 +87,8 @@ const styles = StyleSheet.create({
     margin: 2,
   },
   unlocked: {
-    color: Colors.textPrimary,
+    color: Colors.primary,
+    fontWeight: 'bold'
   },
   locked: {
     color: Colors.textDisabled,

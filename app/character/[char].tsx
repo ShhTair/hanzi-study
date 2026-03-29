@@ -15,6 +15,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { PinyinText } from '../../src/components/PinyinText';
+import { PinyinRubySentence } from '../../src/components/PinyinRuby';
 import decompData from '../../src/data/decompositions.json';
 import { AddToSetModal } from '../../src/components/AddToSetModal';
 import { useAudio } from '../../src/hooks/useAudio';
@@ -423,7 +424,7 @@ export default function CharacterDetail() {
                     <TappableSentence text={item.simplified} highlight={char as string} router={router} />
                     {item.expanded && (
                       <View style={styles.sentenceExpanded}>
-                        <PinyinText pinyin={item.pinyin} size={14} style={{marginBottom: 4, justifyContent: 'flex-start'}} />
+                        <PinyinRubySentence text={item.simplified} pinyinStr={item.pinyin} />
                         <Text style={styles.sentenceTranslation}>{item.meanings ? item.meanings.split('/')[0] : ''}</Text>
                       </View>
                     )}

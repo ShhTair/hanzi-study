@@ -17,7 +17,7 @@ type ResultItem = {
 
 export default function SummaryScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ results: string; mode: string; level: string; set: string }>();
+  const params = useLocalSearchParams<{ results: string; mode: string; level: string; set: string; bestCombo?: string }>();
   
   const [results, setResults] = useState<ResultItem[]>([]);
   const [accuracy, setAccuracy] = useState(0);

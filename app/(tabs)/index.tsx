@@ -4,6 +4,7 @@ import { useSQLiteContext } from 'expo-sqlite';
 import { useEffect, useState } from 'react';
 import { Colors } from '../../src/constants/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { PinyinText } from '../../src/components/PinyinText';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '../../src/context/ThemeContext';
 
@@ -21,6 +22,7 @@ export default function HomeTab() {
   const [hskProgress, setHskProgress] = useState<{ level: number, reviewed: number, total: number }[]>([]);
   const [savedSession, setSavedSession] = useState<any>(null);
   const [heatmap, setHeatmap] = useState<{study_date: string, review_count: number}[]>([]);
+  const [cotd, setCotd] = useState<any>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -69,6 +71,28 @@ export default function HomeTab() {
         if (isMounted && sessionStr) {
           const s = JSON.parse(sessionStr);
           if (Date.now() - s.savedAt < 86400000) setSavedSession(s);
+        }
+
+        
+        const today = new Date().toISOString().split('T')[0];
+        const savedCotdDate = await AsyncStorage.getItem('@hanzi_cotd_date');
+        let chosenWord = '';
+        if (savedCotdDate === today) {
+          chosenWord = await AsyncStorage.getItem('@hanzi_cotd_char') || '你';
+        } else {
+          const progress = await tryQuery<{ level: number }>('SELECT h.level FROM user_progress up JOIN hsk h ON h.word = up.word_id ORDER BY h.level DESC LIMIT 1');
+          const lvl = progress ? progress.level : 1;
+          const chars = await tryAllQuery<{ word: string }>(`SELECT word FROM hsk WHERE level = ${lvl} ORDER BY word`);
+          if (chars.length > 0) {
+            const dateHash = today.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+            chosenWord = chars[dateHash % chars.length].word;
+            await AsyncStorage.setItem('@hanzi_cotd_date', today);
+            await AsyncStorage.setItem('@hanzi_cotd_char', chosenWord);
+          }
+        }
+        if (chosenWord && isMounted) {
+          const cotdData = await tryQuery<any>(`SELECT word, pinyin, meaning FROM hsk WHERE word = '${chosenWord}'`);
+          if (cotdData) setCotd(cotdData);
         }
 
         const hm = await tryAllQuery<{ study_date: string, review_count: number }>(`
@@ -215,6 +239,25 @@ export default function HomeTab() {
         ))}
       </View>
 
+      
+      {cotd && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Character of the Day</Text>
+          <TouchableOpacity style={styles.cotdCard} onPress={() => router.push('/character/' + cotd.word as any)}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={{fontSize: 56, color: colors.textPrimary, marginRight: 16}}>{cotd.word}</Text>
+              <View style={{flex: 1}}>
+                <PinyinText pinyin={cotd.pinyin} size={20} />
+                <Text style={{color: colors.textSecondary, fontSize: 16, marginTop: 4}}>{cotd.meaning.split('/')[0]}</Text>
+              </View>
+              <TouchableOpacity style={styles.cotdBtn} onPress={() => router.push('/study/flashcard?mode=due&level=all' as any)}>
+                <Text style={{color: colors.primary, fontWeight: 'bold'}}>STUDY</Text>
+              </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+
       {/* Section 4: Quick Actions */}
       <View style={styles.actionsContainer}>
         <TouchableOpacity style={styles.actionBtn} onPress={() => router.push({ pathname: '/study/flashcard', params: { mode: 'due', level: 'all' } } as any)}>
@@ -229,6 +272,8 @@ export default function HomeTab() {
 }
 
 const createStyles = (colors: any) => StyleSheet.create({
+  cotdCard: { backgroundColor: colors.card, borderRadius: 12, padding: 16, marginHorizontal: 12, marginBottom: 8, borderWidth: 1, borderColor: colors.border },
+  cotdBtn: { borderWidth: 1, borderColor: colors.primary, paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6 },
   savedSessionCard: { backgroundColor: colors.card, borderRadius: 12, padding: 16, flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
   savedSessionTitle: { fontSize: 16, fontWeight: 'bold', color: colors.textPrimary, marginBottom: 4 },
   savedSessionSubtitle: { fontSize: 14, color: colors.textSecondary },
